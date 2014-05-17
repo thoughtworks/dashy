@@ -12,6 +12,7 @@ Requirements:
 
 `$ mongod --fork # Init mongo in a child process`
 
+`$ npm start`
+
 `$ grunt test`
 
-`$ npm start`
