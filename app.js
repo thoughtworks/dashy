@@ -10,8 +10,10 @@ var users = require('./routes/users');
 
 var app = express();
 
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'public/views'));
 app.set('view engine', 'jade');
 
 app.use(favicon());
@@ -19,8 +21,8 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
-app.use(require('less-middleware')(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(require('less-middleware')(path.join(__dirname, 'public/assets')));
+app.use(express.static(path.join(__dirname, 'public/assets')));
 
 app.use('/', routes);
 app.use('/users', users);
