@@ -1,15 +1,26 @@
-var Application = require('../../models/Application');
-
 describe('Application', function() {
-  it('should connect do database', function(done) {
-    var app = new Application({
-      name: 'armaria nãm'
+
+  describe('before save', function() {
+    var app;
+    beforeEach(function () {
+      app = new Application({
+        name: 'App Name'
+      });
     });
 
-    app.save(function (err, app) {
-      expect(app.name).toEqual('armaria nãm');
-      done();
+    it('should create a key', function(done) {
+      app.save(function (err, app) {
+        expect(app.key).toEqual(jasmine.any(String));
+        done();
+      });
     });
 
+    it('should set the date with the current date by default', function(done) {
+      app.save(function (err, app) {
+        expect(Application.schema.paths.date.defaultValue).toEqual(Date.now);
+        done();
+      });
+    });
   });
+
 });
