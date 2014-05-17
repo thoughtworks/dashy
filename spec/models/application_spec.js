@@ -1,23 +1,17 @@
-describe('Application', function() {
+describe('Application', function () {
 
-  describe('before save', function() {
-    var app;
-    beforeEach(function () {
-      app = new Application({
+  it('should set the request.date default value with Date.now', function () {
+    expect(Application.schema.paths.requests.schema.paths.date.defaultValue).toEqual(Date.now);
+  });
+
+  describe('before save', function () {
+    it('should create a key', function (done) {
+      var app = new Application({
         name: 'App Name'
       });
-    });
 
-    it('should create a key', function(done) {
       app.save(function (err, app) {
         expect(app.key).toEqual(jasmine.any(String));
-        done();
-      });
-    });
-
-    it('should set the date with the current date by default', function(done) {
-      app.save(function (err, app) {
-        expect(Application.schema.paths.date.defaultValue).toEqual(Date.now);
         done();
       });
     });

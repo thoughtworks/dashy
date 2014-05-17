@@ -3,10 +3,10 @@ var mongoose = require('mongoose');
 var schema = mongoose.Schema({
   name: String,
   key: String,
-  date: { type: Date, default: Date.now },
   requests: [{
     endpoint: String,
-    success: Boolean
+    success: Boolean,
+    date: { type: Date, default: Date.now }
   }]
 });
 
