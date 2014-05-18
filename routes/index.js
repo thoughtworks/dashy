@@ -2,9 +2,7 @@ var Application = require('../models/Application');
 var router = require('express').Router();
 
 router.get('/', function(req, res) {
-  res.render('apps/index', {
-    host: req.get('host')
-  });
+  res.render('applications/index');
 });
 
 router.post('/requests/:app_key', function(req, res) {
@@ -23,5 +21,21 @@ router.post('/requests/:app_key', function(req, res) {
   });
 });
 
+router.get('/applications/new', function (req, res) {
+  res.render('applications/new');
+});
+
+router.post('/applications/new', function (req, res) {
+  new Application(req.body.application).save(function (err, app) {
+    if(err) {
+      res.render('applications/new', {
+        application: req.body.application,
+        error: err
+      });
+    }
+
+    res.redirect('/');
+  });
+});
 
 module.exports = router;
