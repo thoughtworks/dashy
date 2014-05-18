@@ -2,7 +2,7 @@ var Application = require('../models/Application');
 var router = require('express').Router();
 
 router.get('/', function(req, res) {
-  Application.find(function (err, apps) {
+  Application.find().sort({name: -1}).exec(function (err, apps) {
     res.render('applications/index', {
       apps: apps
     });

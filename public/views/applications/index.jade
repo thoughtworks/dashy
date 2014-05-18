@@ -4,31 +4,35 @@ block content
   #apps
     header
       .row
-        .col-sm-3
+        .col-sm-6
           .select
-            h1 {{activeApp.name}}
-            .select-options(ng-repeat="app in apps")
-                a(href="javascript:;") {{app.name}}
+            a(href="javascript:;", ng-click="open = !open", ng-class="{'active': open}")
+              {{activeApp.name}}
+              i.glyphicon.glyphicon-chevron-right
+            ul.options(ng-show="open")
+              li(ng-repeat="app in apps")
+                a(href="javascript:;", ng-click="$parent.activeApp = app; $parent.open = false") {{app.name}}
 
-        .col-sm-3
-          | &nbsp;
+          p Key: {{activeApp.key}}
+
 
         .col-sm-6.text-right
-          a.btn.btn-primary
+          a.btn.btn-primary(href="/applications/new")
             i.glyphicon.glyphicon-heart
             | &nbsp;Create an App
 
-    .content
-      ul
-        each request in apps[0].requests
-          li
-            =request.endpoint
-            span(class="#{request.success ? 'fail' : 'success'}")
+    .content.clearfix
+      ul(ng-show="activeApp.requests.length > 0")
+        li(ng-repeat="request in activeApp.requests")
+          {{request.endpoint}}
+          span(ng-class="{'success': request.success, 'fail': !request.success}") &nbsp;
+
+      p(ng-show="activeApp.requests.length === 0") No requests sent yet
 
 
 block js
   script.
-    angular.module('app', [])
+    angular.module('app')
     .run(function ($rootScope) {
       $rootScope.apps = !{JSON.stringify(apps)};
       $rootScope.activeApp = $rootScope.apps[0];

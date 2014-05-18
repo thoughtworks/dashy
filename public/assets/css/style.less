@@ -3,32 +3,110 @@
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: #fafafa;
+  background-color: #f5f5f5;
+}
+
+a:hover {
+  text-decoration: none;
+}
+ul {
+  padding: 0;
+  list-style: none;
 }
 
 body > header {
-  width: 95%;
-  margin: 0 auto -8px;
+  margin-bottom: -8px;
 
   a {
     font-family: Raleway, 'Helvetica Neue', Helvetica, 'Myriad Pro', 'Lucida Grande', sans-serif;
     font-size: 47px;
     font-weight: 100;
-    font-style: italic;
+    position: relative;
+    z-index: 1;
   }
 }
 
 #apps {
-  border: 1px solid #ddd;
-
   > header {
-    background-color: #f1f1f1;
-    .box-shadow(0 3px 3px -1px #ccc);
-    padding: 20px;
+    margin: 20px 0 30px;
+
+    p {
+      margin-top: 20px;
+    }
+
+    .select {
+      width: 230px;
+      position: relative;
+
+      > a {
+        background-color: #3B9BC7;
+        color: #fff;
+        display: block;
+        padding: 10px 20px;
+        font-size: 16px;
+        position: relative;
+
+        i {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          -webkit-transform: rotate(90deg);
+          transform: rotate(90deg);
+        }
+
+        &:hover {
+          background-color: #3B9BC7;
+
+        }
+        &.active {
+          background-color: #0D75A5;
+          color: #fff;
+        }
+      }
+      .options {
+        position: absolute;
+        top: 100%;
+        width: 100%;
+        background-color: #eee;
+
+        a {
+          display: block;
+          padding: 10px;
+        }
+      }
+    }
   }
 
   > .content {
     background-color: #fff;
     padding: 20px;
+
+    li {
+      border: 1px solid #ddd;
+      .border-radius(4px);
+      width: 200px;
+      float: left;
+      padding: 10px 15px;
+      margin: 10px;
+
+      span {
+        .border-radius(100px);
+        display: block;
+        width: 17px;
+        float: right;
+        &.success {
+          background-color: #7CC57C;
+        }
+        &.fail {
+          background-color: #CF6262;
+        }
+      }
+    }
   }
+}
+
+
+.border-radius(@radius) {
+  .border-top-radius(@radius);
+  .border-bottom-radius(@radius);
 }
