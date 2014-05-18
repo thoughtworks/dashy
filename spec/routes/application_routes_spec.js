@@ -3,9 +3,24 @@ describe('/applications', function () {
     cleanDb();
   });
 
-  afterEach(function () {
-  });
+  describe('GET /', function() {
+    it('should assign a local apps variable to view', function (done) {
+      spyOn(MockResponse.prototype, 'render').andCallThrough();
 
+      new Application({name: 'The app'}).save(function (err, app) {
+        get('/', function () {
+          Application.find(function (err, apps) {
+            expect(MockResponse.prototype.render).toHaveBeenCalledWith('applications/index', {
+              apps: jasmine.any(Array)
+            });
+
+            done();
+          });
+        });
+      });
+
+    });
+  });
 
   describe('POST /request/:app_key', function() {
     it('should validate if the app_key exists', function (done) {

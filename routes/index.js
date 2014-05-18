@@ -2,7 +2,11 @@ var Application = require('../models/Application');
 var router = require('express').Router();
 
 router.get('/', function(req, res) {
-  res.render('applications/index');
+  Application.find(function (err, apps) {
+    res.render('applications/index', {
+      apps: apps
+    });
+  });
 });
 
 router.post('/requests/:app_key', function(req, res) {
