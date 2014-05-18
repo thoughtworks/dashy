@@ -1,4 +1,34 @@
+@import 'bootstrap/bootstrap.less';
+
 body {
-  padding: 10px;
+  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: #fafafa;
+}
+
+body > header {
+  width: 95%;
+  margin: 0 auto -8px;
+
+  a {
+    font-family: Raleway, 'Helvetica Neue', Helvetica, 'Myriad Pro', 'Lucida Grande', sans-serif;
+    font-size: 47px;
+    font-weight: 100;
+    font-style: italic;
+  }
+}
+
+#apps {
+  border: 1px solid #ddd;
+
+  > header {
+    background-color: #f1f1f1;
+    .box-shadow(0 3px 3px -1px #ccc);
+    padding: 20px;
+  }
+
+  > .content {
+    background-color: #fff;
+    padding: 20px;
+  }
 }
