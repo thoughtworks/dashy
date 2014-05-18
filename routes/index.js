@@ -1,19 +1,26 @@
-var router = require('express').Router(),
-    Application = require('../models/Application');
-
-router.post('/requests/:app_id', function(req, res) {
-
-});
+var Application = require('../models/Application');
+var router = require('express').Router();
 
 router.get('/', function(req, res) {
-  res.render('apps/index');
+  res.render('apps/index', {
+    host: req.get('host')
+  });
 });
 
-router.get('/apps/new', function(req, res) {
-  res.render('apps/new');
-});
+router.post('/requests/:app_key', function(req, res) {
+  var appKey = req.params.app_key;
 
-router.post('/apps/new', function(req, res) {
+  Application.findOne({key: appKey}, function (err, app) {
+    if(app) {
+      app.requests.push(req.body.request);
+      app.save(function (err, a) {
+        res.send('Success');
+      });
+    }
+    else {
+      res.send('Invalid application key. Please make sure the given key is correct.');
+    }
+  });
 });
 
 

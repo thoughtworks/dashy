@@ -9,27 +9,50 @@ var express = require('express'),
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-setupViews();
-setupMiddlewares();
-setupErrorHandlers();
+
+app.set('views', path.join(__dirname, 'public/views'));
+app.set('view engine', 'jade');
+
+app.use(favicon());
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+app.use(cookieParser());
+app.use(require('less-middleware')(path.join(__dirname, 'public/assets')));
+app.use(express.static(path.join(__dirname, 'public/assets')));
 
 require('./config/database');
 
 app.use('/', routes);
 
-app.set('port', process.env.PORT || 3000);
+var server;
 
-var server = app.listen(app.get('port'), function() {
-  console.log('Express server listening on port ' + server.address().port);
-});
+exports.startServer = function(cb) {
+  app.set('port', process.env.PORT || 3000);
+  server = app.listen(app.get('port'), function (showMsg) {
+    if(showMsg) console.log('Express server listening on port ' + server.address().port);
 
+    cb && cb();
+  });
+};
 
-function setupViews() {
+exports.closeServer = function(cb) {
+  if (server) {
+    server.close(cb);
+  }
+}
+
+// when app.js is launched directly
+if (module.id === require.main.id) {
+  exports.startServer(true);
+}
+
+function setupViews(app) {
   app.set('views', path.join(__dirname, 'public/views'));
   app.set('view engine', 'jade');
 }
 
-function setupMiddlewares() {
+function setupMiddlewares(app) {
   app.use(favicon());
   app.use(logger('dev'));
   app.use(bodyParser.json());
@@ -46,7 +69,7 @@ function setupMiddlewares() {
   });
 }
 
-function setupErrorHandlers() {
+function setupErrorHandlers(app) {
   // development error handler
   // will print stacktrace
   if (app.get('env') === 'development') {
