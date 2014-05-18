@@ -45,6 +45,8 @@ describe('/applications', function () {
 
   describe('POST /new', function(done) {
     it('should create an Application', function(done) {
+      spyOn(MockResponse.prototype, 'redirect').andCallThrough();
+
       var data = {
         application: {
           name: 'A Name'
@@ -55,6 +57,7 @@ describe('/applications', function () {
         Application.find(function (err, apps) {
           expect(apps.length).toEqual(1);
           expect(apps[0].name).toEqual('A Name');
+          expect(MockResponse.prototype.redirect).toHaveBeenCalledWith('/');
           done();
         });
       })
