@@ -1,29 +1,66 @@
-var http = require('http');
 require('../config/database');
-var App = require('../app');
+var router = require('../routes/index');
 
 module.exports = {
-  baseUrl: 'http://localhost:5555/',
-  Request: Request,
   Application: require('../models/application'),
   cleanDb: cleanDb,
-  initServer: initServer,
-  closeServer: App.closeServer
+
+  MockResponse: MockResponse,
+  post: function (url, data, callback) {
+    for(var i in router.stack) {
+      var route = router.stack[i];
+
+      if(route.regexp.test(url) && route.route.methods.post) {
+        var matches = url.match(route.regexp);
+        var keys = {};
+
+        for(var j = 0; j < route.keys.length; j++) {
+          keys[route.keys[j].name] = matches[j+1];
+        }
+        for(var j in route.route.stack) {
+          if(route.route.stack[j].method === 'post') {
+            var res = new MockResponse();
+
+            route.route.stack[j].handle(new MockRequest(keys, data), res);
+
+            responseCalled();
+
+            function responseCalled() {
+              setTimeout(function() {
+                if(res.called) {
+                  callback();
+                  return;
+                }
+                responseCalled();
+              }, 10)
+            }
+
+          }
+        }
+
+        break;
+      }
+    }
+  }
 };
 
-function initServer() {
-  var ok = false;
 
-  runs(function () {
-    process.env.PORT = 5555;
-    App.startServer(function() {
-      ok = true;
-    });
-  });
+function MockResponse () {
+  this.called = false;
+};
+MockResponse.prototype.send = function (url) {
+  this.called = true;
+};
+MockResponse.prototype.render = function (url, params) {
+  this.called = true
+};
+MockResponse.prototype.redirect = function (url, params) {
+  this.called = true
+};
 
-  waitsFor(function () {
-    return ok;
-  });
+function MockRequest(params, body) {
+  this.params = params;
+  this.body = body;
 }
 
 function cleanDb() {
@@ -43,41 +80,4 @@ function cleanDb() {
   waitsFor(function () {
     return clean;
   });
-}
-
-function Request (opts) {
-  var self = this;
-  opts = opts || {};
-
-  this.opts = {
-    method: 'POST',
-    host: 'localhost',
-    port: 5555,
-    path: opts.path,
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
-
-  this.run = function (data, callback) {
-    var req = http.request(self.opts, function(res) {
-      var output = '';
-
-      res.on('data', function (chunk) {
-        output += chunk;
-      });
-
-      res.on('end', function() {
-        callback(output);
-      });
-    });
-
-    req.write(JSON.stringify(data));
-
-    req.on('error', function(e) {
-      console.log('> > > Problem with request: ' + e.message);
-    });
-
-    req.end();
-  };
 }
