@@ -3,9 +3,14 @@ var router = require('express').Router();
 
 router.get('/', function(req, res) {
   Application.find().sort({name: -1}).exec(function (err, apps) {
-    res.render('applications/index', {
-      apps: apps
-    });
+    if(apps.length > 0) {
+      res.render('applications/index', {
+        apps: apps
+      });
+    }
+    else {
+      res.redirect('/applications/new');
+    }
   });
 });
 
@@ -14,7 +19,16 @@ router.post('/requests/:app_key', function(req, res) {
 
   Application.findOne({key: appKey}, function (err, app) {
     if(app) {
-      app.requests.push(req.body.request);
+      var data = req.body.request;
+      app.requests = app.requests || {};
+      app.requests[data.environment] = app.requests[data.environment] || {};
+      app.requests[data.environment][data.endpoint] = app.requests[data.environment][data.endpoint] || [];
+
+      app.requests[data.environment][data.endpoint].push({
+        success: data.success,
+        date: new Date()
+      })
+
       app.save(function (err, a) {
         res.send('Success');
       });

@@ -4,6 +4,15 @@ describe('/applications', function () {
   });
 
   describe('GET /', function() {
+    it('should redirect to new app page if there is no apps yet', function(done) {
+      spyOn(MockResponse.prototype, 'redirect').andCallThrough();
+
+      get('/', function () {
+        expect(MockResponse.prototype.redirect).toHaveBeenCalledWith('/applications/new');
+        done();
+      });
+    });
+
     it('should assign a local apps variable to view', function (done) {
       spyOn(MockResponse.prototype, 'render').andCallThrough();
 
@@ -35,6 +44,7 @@ describe('/applications', function () {
     it('should create a request for the application if the app_key exists', function(done) {
       var data = {
         request: {
+          environment: 'Production',
           endpoint: 'Service',
           success: true
         }
@@ -47,9 +57,11 @@ describe('/applications', function () {
           expect(MockResponse.prototype.send).toHaveBeenCalledWith('Success');
 
           Application.findOne({ key: app.key }, function(err, app) {
-            expect(app.requests.length).toEqual(1);
-            expect(app.requests[0].endpoint).toEqual(data.request.endpoint);
-            expect(app.requests[0].success).toEqual(data.request.success);
+            expect(app.requests['Production']).toBeDefined();
+            expect(app.requests['Production']['Service']).toBeDefined();
+            expect(app.requests['Production']['Service'][0].date).toEqual(jasmine.any(Date));
+            expect(app.requests['Production']['Service'][0].success).toEqual(data.request.success);
+
             done();
           });
         });
