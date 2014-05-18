@@ -1,6 +1,35 @@
 extends ../layout
 
 block content
-  ul
-    each app in apps
-      li= app
+  #apps
+    header
+      .row
+        .col-sm-3
+          .select
+            h1 {{activeApp.name}}
+            .select-options(ng-repeat="app in apps")
+                a(href="javascript:;") {{app.name}}
+
+        .col-sm-3
+          | &nbsp;
+
+        .col-sm-6.text-right
+          a.btn.btn-primary
+            i.glyphicon.glyphicon-heart
+            | &nbsp;Create an App
+
+    .content
+      ul
+        each request in apps[0].requests
+          li
+            =request.endpoint
+            span(class="#{request.success ? 'fail' : 'success'}")
+
+
+block js
+  script.
+    angular.module('app', [])
+    .run(function ($rootScope) {
+      $rootScope.apps = !{JSON.stringify(apps)};
+      $rootScope.activeApp = $rootScope.apps[0];
+    });
