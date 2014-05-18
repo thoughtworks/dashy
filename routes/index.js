@@ -27,9 +27,9 @@ router.post('/requests/:app_key', function(req, res) {
       app.requests[data.environment][data.endpoint].push({
         success: data.success,
         date: new Date()
-      })
+      });
 
-      app.save(function (err, a) {
+      Application.update({key: appKey}, {requests: app.requests}, function (err, app) {
         res.send('Success');
       });
     }

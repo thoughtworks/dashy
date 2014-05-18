@@ -42,6 +42,7 @@ describe('/applications', function () {
     });
 
     it('should create a request for the application if the app_key exists', function(done) {
+      spyOn(MockResponse.prototype, 'send').andCallThrough();
       var data = {
         request: {
           environment: 'Production',
@@ -49,20 +50,43 @@ describe('/applications', function () {
           success: true
         }
       };
+      var data2 = {
+        request: {
+          environment: 'Production',
+          endpoint: 'Service',
+          success: false
+        }
+      };
+      var data3 = {
+        request: {
+          environment: 'QA',
+          endpoint: 'OtherService',
+          success: false
+        }
+      };
 
       new Application({ name: 'The app' }).save(function(err, app) {
-        spyOn(MockResponse.prototype, 'send').andCallThrough();
-
         post('/requests/' + app.key, data, function () {
-          expect(MockResponse.prototype.send).toHaveBeenCalledWith('Success');
+          post('/requests/' + app.key, data2, function () {
+            post('/requests/' + app.key, data3, function () {
+              expect(MockResponse.prototype.send).toHaveBeenCalledWith('Success');
 
-          Application.findOne({ key: app.key }, function(err, app) {
-            expect(app.requests['Production']).toBeDefined();
-            expect(app.requests['Production']['Service']).toBeDefined();
-            expect(app.requests['Production']['Service'][0].date).toEqual(jasmine.any(Date));
-            expect(app.requests['Production']['Service'][0].success).toEqual(data.request.success);
+              Application.findOne({ key: app.key }, function(err, app) {
+                expect(app.requests['Production']).toBeDefined();
+                expect(app.requests['Production']['Service'].length).toEqual(2);
+                expect(app.requests['Production']['Service'][0].date).toEqual(jasmine.any(Date));
+                expect(app.requests['Production']['Service'][0].success).toEqual(true);
+                expect(app.requests['Production']['Service'][1].date).toEqual(jasmine.any(Date));
+                expect(app.requests['Production']['Service'][1].success).toEqual(false);
 
-            done();
+                expect(app.requests['QA']).toBeDefined();
+                expect(app.requests['QA']['OtherService'].length).toEqual(1);
+                expect(app.requests['QA']['OtherService'][0].date).toEqual(jasmine.any(Date));
+                expect(app.requests['QA']['OtherService'][0].success).toEqual(false);
+
+                done();
+              });
+            });
           });
         });
       });
