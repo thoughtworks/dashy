@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var schema = mongoose.Schema({
   name: String,
-  key: String,
+  key: {type: String, unique: true},
   requests: [{
     endpoint: String,
     success: Boolean,

@@ -4,6 +4,10 @@ describe('Application', function () {
     expect(Application.schema.paths.requests.schema.paths.date.defaultValue).toEqual(Date.now);
   });
 
+  it('should have attribute key as unique', function() {
+    expect(Application.schema.paths.key.options.unique).toEqual(true);
+  });
+
   describe('before save', function () {
     var app;
 
