@@ -3,10 +3,6 @@ extends ../layout
 block content
   h4 Crie uma app
 
-  form.form-inline(method="post", action="/apps/new")
-    input.form-control(type="text", placeholder="Nome", name="name")
+  form.form-inline(method="post", action="/applications/new")
+    input.form-control(type="text", placeholder="Nome", name="application[name]")
     button(type="submit").btn.btn-success Criar
-
-block js
-  script.
-    angular.module('app', []);
