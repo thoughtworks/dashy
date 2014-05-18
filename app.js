@@ -29,10 +29,9 @@ var server;
 
 exports.startServer = function(cb) {
   app.set('port', process.env.PORT || 3000);
-  server = app.listen(app.get('port'), function (showMsg) {
-    if(showMsg) console.log('Express server listening on port ' + server.address().port);
 
-    cb && cb();
+  server = app.listen(app.get('port'), function () {
+    typeof cb === 'function' && cb();
   });
 };
 
@@ -44,7 +43,9 @@ exports.closeServer = function(cb) {
 
 // when app.js is launched directly
 if (module.id === require.main.id) {
-  exports.startServer(true);
+  exports.startServer(function() {
+    console.log('Express server listening on port ' + server.address().port);
+  });
 }
 
 function setupViews(app) {
