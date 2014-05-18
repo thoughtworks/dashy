@@ -1,11 +1,11 @@
 describe('Application', function () {
 
   it('should set the request.date default value with Date.now', function () {
-    expect(global.Application.schema.paths.requests.schema.paths.date.defaultValue).toEqual(Date.now);
+    expect(Application.schema.paths.requests.schema.paths.date.defaultValue).toEqual(Date.now);
   });
 
   it('should have attribute key as unique', function() {
-    expect(global.Application.schema.paths.key.options.unique).toEqual(true);
+    expect(Application.schema.paths.key.options.unique).toEqual(true);
   });
 
   describe('before save', function () {
@@ -13,7 +13,7 @@ describe('Application', function () {
 
     beforeEach(function() {
       runs(function () {
-        new global.Application({name: 'App Name'}).save(function (err, a) {
+        new Application({name: 'App Name'}).save(function (err, a) {
           app = a;
         });
       });

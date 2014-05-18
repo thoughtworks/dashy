@@ -1,17 +1,17 @@
 describe('/applications', function () {
   beforeEach(function() {
-    global.initServer();
-    global.cleanDb();
+    initServer();
+    cleanDb();
   });
 
   afterEach(function () {
-    global.closeServer();
+    closeServer();
   });
 
 
   describe('POST /request/:app_key', function() {
     it('should validate if the app_key exists', function (done) {
-      new global.Request({ path: '/requests/invalid_key' }).run({}, function (output) {
+      new Request({ path: '/requests/invalid_key' }).run({}, function (output) {
         expect(output).toEqual('Invalid application key. Please make sure the given key is correct.');
         done();
       });
@@ -25,11 +25,11 @@ describe('/applications', function () {
         }
       };
 
-      new global.Application({ name: 'The app' }).save(function(err, app) {
-        new global.Request({ path: '/requests/' + app.key }).run(data, function (output) {
+      new Application({ name: 'The app' }).save(function(err, app) {
+        new Request({ path: '/requests/' + app.key }).run(data, function (output) {
           expect(output).toEqual('Success');
 
-          global.Application.findOne({ key: app.key }, function(err, app) {
+          Application.findOne({ key: app.key }, function(err, app) {
             expect(app.requests.length).toEqual(1);
             expect(app.requests[0].endpoint).toEqual(data.request.endpoint);
             expect(app.requests[0].success).toEqual(data.request.success);
@@ -49,8 +49,8 @@ describe('/applications', function () {
         }
       };
 
-      new global.Request({ path: '/applications/new' }).run(data, function (output) {
-        global.Application.find(function (err, apps) {
+      new Request({ path: '/applications/new' }).run(data, function (output) {
+        Application.find(function (err, apps) {
           expect(apps.length).toEqual(1);
           expect(apps[0].name).toEqual('A Name');
           done();
