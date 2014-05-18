@@ -11,11 +11,13 @@ var schema = mongoose.Schema({
 });
 
 schema.pre('save', function (next) {
-  this.key = generateUniqueKey();
+  if(!this.key) {
+    this.key = generateUniqueKey();
+  }
   next();
 });
 
-module.exports = mongoose.model('Application', schema);
+module.exports = mongoose.models.Application || mongoose.model('Application', schema);
 
 function generateUniqueKey() {
   function S4() {
