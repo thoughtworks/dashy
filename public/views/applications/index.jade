@@ -23,9 +23,12 @@ block content
 
     .content.clearfix
       ul(ng-show="activeApp.requests.length > 0")
-        li(ng-repeat="request in activeApp.requests")
-          {{request.endpoint}}
-          span(ng-class="{'success': request.success, 'fail': !request.success}") &nbsp;
+        li.request(ng-repeat="request in activeApp.requests")
+          <h4>{{request.endpoint}}</h4>
+          ul
+            li(ng-repeat="r in activeApp.requests[$index]")
+              span(ng-class="{'success': r.success, 'fail': !r.success}") &nbsp;
+              {{r.date}}
 
       p(ng-show="activeApp.requests.length === 0") No requests sent yet
 
