@@ -75,6 +75,23 @@ body > header {
         }
       }
     }
+
+    .envs {
+      a {
+        display: inline-block;
+        padding: 10px 20px;
+        margin-right: 10px;
+        color: #666;
+
+        &:hover {
+          background-color: lighten(#3B9BC7, 40%);
+        }
+        &.active {
+          background-color: #3B9BC7;
+          color: #fff;
+        }
+      }
+    }
   }
 
   > .content {
@@ -83,15 +100,32 @@ body > header {
       border: 1px solid #ddd;
       .border-radius(4px);
       width: 200px;
+      height: 200px;
       float: left;
-      padding: 10px 15px;
+      // padding: 10px 15px;
       margin: 10px;
+      font-size: 12px;
 
+      h4 {
+        margin: 0 0 20px;
+        padding: 10px;
+        background-color: #fff;
+        .border-top-radius(4px);
+        .box-shadow(0 1px 1px 0 #ddd);
+      }
+      ul {
+        padding: 0 10px;
+      }
+      li {
+        margin-bottom: 10px;
+      }
       span {
         .border-radius(100px);
         display: block;
-        width: 17px;
-        float: right;
+        width: 15px;
+        float: left;
+        margin-right: 10px;
+
         &.success {
           background-color: #7CC57C;
         }

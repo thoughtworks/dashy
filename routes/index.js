@@ -25,7 +25,7 @@ router.post('/requests/:app_key', function(req, res) {
       app.requests[data.environment][data.endpoint] = app.requests[data.environment][data.endpoint] || [];
 
       app.requests[data.environment][data.endpoint].push({
-        success: data.success,
+        success: toBool(data.success),
         date: new Date()
       });
 
@@ -55,5 +55,15 @@ router.post('/applications/new', function (req, res) {
     res.redirect('/');
   });
 });
+
+function toBool(value) {
+  if(typeof value === 'string') {
+    if(value === 'true') return true;
+    else if(value === 'false') return false;
+  }
+
+  return value;
+}
+
 
 module.exports = router;

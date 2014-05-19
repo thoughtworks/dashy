@@ -30,7 +30,7 @@ block content
         li.request(ng-repeat="(endpoint, requests) in environments[activeEnv]")
           <h4>{{endpoint}}</h4>
           ul
-            li(ng-repeat="r in requests")
+            li(ng-repeat="r in requests | orderBy:'-date' | limitTo: 5")
               span(ng-class="{'success': r.success, 'fail': !r.success}") &nbsp;
               {{r.date | timeAgo}}
 
