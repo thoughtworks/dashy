@@ -9,7 +9,7 @@ module.exports = function (io) {
   });
 
   router.get('/', function(req, res) {
-    Application.find().sort({name: -1}).exec(function (err, apps) {
+    Application.find().sort({name: 1}).exec(function (err, apps) {
       if(apps.length > 0) {
         res.render('applications/index', {
           apps: apps
@@ -37,14 +37,17 @@ module.exports = function (io) {
         };
         app.requests[data.environment][data.endpoint].push(newRequest);
 
-        socket && socket.emit('newRequest', {
-          environment: data.environment,
-          endpoint: data.endpoint,
-          request: newRequest
-        });
+        Application.find(function (err, apps) {
+          socket && socket.emit('newRequest', {
+            appName: app.name,
+            environment: data.environment,
+            endpoint: data.endpoint,
+            request: newRequest
+          });
 
-        Application.update({key: appKey}, {requests: app.requests}, function (err, app) {
-          res.send('Success');
+          Application.update({key: appKey}, {requests: app.requests}, function (err, app) {
+            res.send('Success');
+          });
         });
       }
       else {

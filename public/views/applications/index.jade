@@ -23,18 +23,18 @@ block content
 
 
       .envs
-        a(href="javascript:;", ng-repeat="(env, data) in environments", active="{{env}}") {{env}}
+        a(href="javascript:;", ng-repeat="(env, data) in activeApp.requests", active="{{env}}") {{env}}
 
     .content.clearfix
-      ul(ng-show="environments")
-        li.request(ng-repeat="(endpoint, requests) in environments[activeEnv]")
+      ul(ng-show="activeApp.requests")
+        li.request(ng-repeat="(endpoint, requests) in activeApp.requests[activeEnv]", endpoint="{{activeEnv}}_{{endpoint}}")
           <h4>{{endpoint}}</h4>
           ul
-            li(ng-repeat="r in requests | orderBy:'-date' | limitTo: 5")
+            li(ng-repeat="r in requests | orderBy:'-date' | limitTo: 5 track by $index")
               span(ng-class="{'success': r.success, 'fail': !r.success}") &nbsp;
               {{r.date | timeAgo}}
 
-      p(ng-show="!environments") No requests sent to {{activeApp.name}} yet
+      p(ng-show="!activeApp.requests") No requests sent to {{activeApp.name}} yet
 
 
 block js
@@ -44,19 +44,36 @@ block js
       $rootScope.apps = !{JSON.stringify(apps)};
       $rootScope.activeApp = $rootScope.apps[0];
 
-      $rootScope.environments = $rootScope.apps[0].requests;
-      $rootScope.activeEnv = Object.keys($rootScope.apps[0].requests)[0];
+      if($rootScope.activeApp.requests) {
+        $rootScope.activeEnv = Object.keys($rootScope.activeApp.requests)[0];
+      }
 
       var socket = io.connect('http://localhost:3000/');
       socket.on('newRequest', function (data) {
-        $rootScope.$apply(function () {
-          $rootScope.environments[$rootScope.activeEnv][data.endpoint].push(data.request);
-        })
+        console.log(data);
 
-        if($rootScope.activeEnv === data.environment) {
-          var el = $('.request li:first')
-          el.addClass('spawned');
-        }
+        $rootScope.$apply(function () {
+          for(var i in $rootScope.apps) {
+            if($rootScope.apps[i].name === data.appName) {
+              if(data.appName === $rootScope.activeApp.name) {
+                $rootScope.activeApp.requests[data.environment] = $rootScope.activeApp.requests[data.environment] || {};
+                $rootScope.activeApp.requests[data.environment][data.endpoint] = $rootScope.activeApp.requests[data.environment][data.endpoint] || [];
+                $rootScope.activeApp.requests[data.environment][data.endpoint].push(data.request);
+                $rootScope.apps[i] = $rootScope.activeApp;
+              }
+              else {
+                $rootScope.apps[i].requests[data.environment] = $rootScope.apps[i].requests[data.environment] || {};
+                $rootScope.apps[i].requests[data.environment][data.endpoint] = $rootScope.apps[i].requests[data.environment][data.endpoint] || [];
+                $rootScope.apps[i].requests[data.environment][data.endpoint].push(data.request);
+              }
+
+              break;
+            }
+          }
+        });
+
+        var el = $('[endpoint="' + data.environment + '_' + data.endpoint + '"] li:first');
+        el.addClass('spawned');
       });
     });
 
