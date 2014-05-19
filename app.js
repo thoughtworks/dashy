@@ -1,14 +1,16 @@
-var express = require('express'),
-    path = require('path'),
-    favicon = require('static-favicon'),
-    logger = require('morgan'),
+var express      = require('express'),
+    path         = require('path'),
+    favicon      = require('static-favicon'),
+    logger       = require('morgan'),
     cookieParser = require('cookie-parser'),
-    bodyParser = require('body-parser'),
-    routes = require('./routes/index'),
-    app = express();
+    bodyParser   = require('body-parser'),
+    app          = express(),
+    server       = require('http').createServer(app),
+    io           = require('socket.io').listen(server),
+    routes       = require('./routes/index')(io);
+
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-
 
 app.set('views', path.join(__dirname, 'public/views'));
 app.set('view engine', 'jade');
@@ -25,19 +27,21 @@ require('./config/database');
 
 app.use('/', routes);
 
-var server;
+var serverInstance;
+
+global.io = io;
 
 exports.startServer = function(cb) {
   app.set('port', process.env.PORT || 3000);
 
-  server = app.listen(app.get('port'), function () {
+  serverInstance = server.listen(app.get('port'), function () {
     typeof cb === 'function' && cb();
   });
 };
 
 exports.closeServer = function(cb) {
-  if (server) {
-    server.close(cb);
+  if (serverInstance) {
+    serverInstance.close(cb);
   }
 }
 

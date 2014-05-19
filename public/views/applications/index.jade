@@ -46,4 +46,17 @@ block js
 
       $rootScope.environments = $rootScope.apps[0].requests;
       $rootScope.activeEnv = Object.keys($rootScope.apps[0].requests)[0];
+
+      var socket = io.connect('http://localhost:3000/');
+      socket.on('newRequest', function (data) {
+        $rootScope.$apply(function () {
+          $rootScope.environments[$rootScope.activeEnv][data.endpoint].push(data.request);
+        })
+
+        if($rootScope.activeEnv === data.environment) {
+          var el = $('.request li:first')
+          el.addClass('spawned');
+        }
+      });
     });
+

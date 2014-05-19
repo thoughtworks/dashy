@@ -107,17 +107,15 @@ body > header {
       font-size: 12px;
 
       h4 {
-        margin: 0 0 20px;
+        margin: 0 0 10px;
         padding: 10px;
         background-color: #fff;
         .border-top-radius(4px);
         .box-shadow(0 1px 1px 0 #ddd);
       }
-      ul {
-        padding: 0 10px;
-      }
       li {
-        margin-bottom: 10px;
+        margin-bottom: 5px;
+        padding: 4px 12px;
       }
       span {
         .border-radius(100px);
@@ -152,4 +150,20 @@ body > header {
   .border-bottom-radius(@radius);
 }
 
+@-webkit-keyframes spawn {
+  0% {
+    background-color: transparent;
+  }
 
+  20% {
+    background-color: #FFFF6B;
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+.spawned {
+  .animation-duration(1s);
+  .animation-name(spawn);
+}

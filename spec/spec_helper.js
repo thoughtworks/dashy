@@ -12,7 +12,7 @@ module.exports = {
 };
 
 function Route () {
-  var router = require('../routes/index');
+  var router = require('../routes/index')();
   var self = this;
 
   self.isGet = false;
