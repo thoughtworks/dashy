@@ -47,19 +47,4 @@ block js
 
       $rootScope.environments = $rootScope.apps[0].requests;
       $rootScope.activeEnv = Object.keys($rootScope.apps[0].requests)[0];
-    })
-
-    .directive('active', function ($rootScope) {
-      return {
-        link: function (scope, el, attrs) {
-          if($rootScope.activeEnv === attrs.active) {
-            el.addClass('active').siblings().removeClass('active');
-          }
-
-          el.click(function() {
-            el.addClass('active').siblings().removeClass('active');
-            $rootScope.activeEnv = attrs.active;
-          });
-        }
-      }
     });
