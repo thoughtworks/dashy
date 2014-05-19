@@ -15,4 +15,10 @@ angular.module('app', [])
       });
     }
   }
+})
+
+.filter('timeAgo', function () {
+  return function (date) {
+    return moment(date).fromNow();
+  };
 });

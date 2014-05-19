@@ -29,11 +29,10 @@ block content
       ul(ng-show="environments")
         li.request(ng-repeat="(endpoint, requests) in environments[activeEnv]")
           <h4>{{endpoint}}</h4>
-          {{requests.length}}
           ul
             li(ng-repeat="r in requests")
               span(ng-class="{'success': r.success, 'fail': !r.success}") &nbsp;
-              {{r.date}}
+              {{r.date | timeAgo}}
 
       p(ng-show="!environments") No requests sent to {{activeApp.name}} yet
 
