@@ -19,5 +19,4 @@ Requirements:
 
 #### Send a request
 
-curl --data "request[environment]=<ENVIRONMENT>&request[endpoint]=<ENDPOINT>&request[success]=<true|false>" \
-     http://localhost:3000/requests/:app_id
+curl --data "request[environment]=<ENVIRONMENT>&request[endpoint]=<ENDPOINT>&request[success]=<true|false>" http://localhost:3000/requests/:app_id
