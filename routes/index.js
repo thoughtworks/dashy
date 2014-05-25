@@ -52,17 +52,15 @@ module.exports = function (io) {
       };
       app.requests[environment][data.endpoint].push(newRequest);
 
-      Application.find(function (err, apps) {
-        socket && socket.emit('newRequest', {
-          appName: app.name,
-          environment: environment,
-          endpoint: data.endpoint,
-          request: newRequest
-        });
+      socket && socket.emit('newRequest', {
+        appName: app.name,
+        environment: environment,
+        endpoint: data.endpoint,
+        request: newRequest
+      });
 
-        Application.update({key: appKey}, {requests: app.requests}, function (err, numberAffected, raw) {
-          res.send('Success');
-        });
+      Application.update({key: appKey}, {requests: app.requests}, function (err, numberAffected, raw) {
+        res.send('Success');
       });
     });
   });
