@@ -25,34 +25,36 @@ module.exports = function (io) {
     var appKey = req.params.app_key;
 
     Application.findOne({key: appKey}, function (err, app) {
-      if(app) {
-        var data = req.body.request;
-        app.requests = app.requests || {};
-        app.requests[data.environment] = app.requests[data.environment] || {};
-        app.requests[data.environment][data.endpoint] = app.requests[data.environment][data.endpoint] || [];
-
-        var newRequest = {
-          success: toBool(data.success),
-          date: new Date()
-        };
-        app.requests[data.environment][data.endpoint].push(newRequest);
-
-        Application.find(function (err, apps) {
-          socket && socket.emit('newRequest', {
-            appName: app.name,
-            environment: data.environment,
-            endpoint: data.endpoint,
-            request: newRequest
-          });
-
-          Application.update({key: appKey}, {requests: app.requests}, function (err, app) {
-            res.send('Success');
-          });
-        });
-      }
-      else {
+      if(!app || err) {
         res.send('Invalid application key. Please make sure the given key is correct.');
+        return;
       }
+
+      var data = req.body.request;
+      var environment = data.environment || 'Default';
+
+      app.requests = app.requests || {};
+      app.requests[environment] = app.requests[environment] || {};
+      app.requests[environment][data.endpoint] = app.requests[environment][data.endpoint] || [];
+
+      var newRequest = {
+        success: toBool(data.success),
+        date: new Date()
+      };
+      app.requests[environment][data.endpoint].push(newRequest);
+
+      Application.find(function (err, apps) {
+        socket && socket.emit('newRequest', {
+          appName: app.name,
+          environment: environment,
+          endpoint: data.endpoint,
+          request: newRequest
+        });
+
+        Application.update({key: appKey}, {requests: app.requests}, function (err, numberAffected, raw) {
+          res.send('Success');
+        });
+      });
     });
   });
 

@@ -1,7 +1,6 @@
 describe('/applications', function () {
 
   beforeEach(cleanDb);
-  afterEach(cleanDb);
 
   describe('GET /', function() {
     it('should redirect to new app page if there is no apps yet', function(done) {
@@ -49,6 +48,8 @@ describe('/applications', function () {
 
       beforeEach(function () {
         runs(function () {
+          appKey = undefined;
+
           new Application({ name: 'The app' }).save(function(err, app) {
             appKey = app.key;
           });
@@ -75,6 +76,22 @@ describe('/applications', function () {
             expect(app.requests['QA']['OtherService'].length).toEqual(1);
             expect(app.requests['QA']['OtherService'][0].date).toEqual(jasmine.any(Date));
             expect(app.requests['QA']['OtherService'][0].success).toEqual(false);
+
+            done();
+          });
+        });
+      });
+
+      it('should create a default environment if the param is not given', function (done) {
+        var data = {
+          request: {endpoint: 'Service', success: true }
+        };
+
+        post('/requests/' + appKey, data, function () {
+          Application.findOne({ key: appKey }, function(err, app) {
+            expect(app.requests).toBeDefined();
+            expect(app.requests['Default']['Service']).toBeDefined();
+            expect(app.requests['Default']['Service'].length).toEqual(1);
 
             done();
           });
