@@ -1,7 +1,7 @@
 @import 'bootstrap/bootstrap.less';
 
 body {
-  padding: 50px;
+  padding: 20px 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   background-color: #fff;
 }
@@ -9,6 +9,7 @@ body {
 a:hover {
   text-decoration: none;
 }
+
 ul {
   padding: 0;
   list-style: none;
@@ -18,11 +19,9 @@ body > header {
   margin-bottom: -8px;
 
   a {
-    font-family: Raleway, 'Helvetica Neue', Helvetica, 'Myriad Pro', 'Lucida Grande', sans-serif;
+    font-family: 'Raleway', 'Helvetica Neue', Helvetica, 'Myriad Pro', 'Lucida Grande', sans-serif;
     font-size: 47px;
     font-weight: 100;
-    position: relative;
-    z-index: 1;
   }
 }
 
@@ -75,26 +74,27 @@ body > header {
         }
       }
     }
+  }
 
-    .envs {
-      a {
-        display: inline-block;
-        padding: 10px 20px;
-        margin-right: 10px;
-        color: #666;
+  .environments {
+    a {
+      display: inline-block;
+      padding: 10px 20px;
+      margin-right: 10px;
+      color: #666;
+      display: block;
 
-        &:hover {
-          background-color: lighten(#3B9BC7, 40%);
-        }
-        &.active {
-          background-color: #3B9BC7;
-          color: #fff;
-        }
+      &:hover {
+        background-color: lighten(#3B9BC7, 40%);
+      }
+      &.active {
+        background-color: #3B9BC7;
+        color: #fff;
       }
     }
   }
 
-  > .content {
+  .requests {
     li.request {
       background-color: #f9f9f9;
       border: 1px solid #ddd;
@@ -102,8 +102,7 @@ body > header {
       width: 200px;
       height: 200px;
       float: left;
-      // padding: 10px 15px;
-      margin: 10px;
+      margin: 0 10px 20px;
       font-size: 12px;
 
       h4 {

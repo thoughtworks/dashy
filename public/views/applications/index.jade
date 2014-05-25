@@ -22,19 +22,24 @@ block content
             | &nbsp;Create an App
 
 
-      .envs
-        a(href="javascript:;", ng-repeat="(env, data) in activeApp.requests", active="{{env}}") {{env}}
 
-    .content.clearfix
-      ul(ng-show="activeApp.requests")
-        li.request(ng-repeat="(endpoint, requests) in activeApp.requests[activeEnv]", endpoint="{{activeEnv}}_{{endpoint}}")
-          <h4>{{endpoint}}</h4>
-          ul
-            li(ng-repeat="r in requests | orderBy:'-date' | limitTo: 5 track by $index")
-              span(ng-class="{'success': r.success, 'fail': !r.success}") &nbsp;
-              {{r.date | timeAgo}}
 
-      p(ng-show="!activeApp.requests") No requests sent to {{activeApp.name}} yet
+    .row
+      .col-sm-2
+        .environments
+          a(href="javascript:;", ng-repeat="(env, data) in activeApp.requests", active="{{env}}") {{env}}
+
+      .col-sm-10.requests
+        p(ng-show="!activeApp.requests") No requests sent to {{activeApp.name}} yet
+
+        ul(ng-show="activeApp.requests")
+          li.request(ng-repeat="(endpoint, requests) in activeApp.requests[activeEnv]", endpoint="{{activeEnv}}_{{endpoint}}")
+            <h4>{{endpoint}}</h4>
+            ul
+              li(ng-repeat="r in requests | orderBy:'-date' | limitTo: 5 track by $index")
+                span(ng-class="{'success': r.success, 'fail': !r.success}") &nbsp;
+                {{r.date | timeAgo}}
+
 
 
 block js
