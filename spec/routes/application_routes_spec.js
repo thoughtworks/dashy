@@ -1,4 +1,5 @@
 describe('/applications', function () {
+
   beforeEach(function() {
     cleanDb();
   });
@@ -27,14 +28,15 @@ describe('/applications', function () {
           });
         });
       });
-
     });
   });
 
   describe('POST /request/:app_key', function() {
-    it('should validate if the app_key exists', function (done) {
+    beforeEach(function () {
       spyOn(MockResponse.prototype, 'send').andCallThrough();
+    });
 
+    it('should validate if the app_key exists', function (done) {
       post('/requests/invalid_key', {}, function() {
         expect(MockResponse.prototype.send).toHaveBeenCalledWith('Invalid application key. Please make sure the given key is correct.')
         done();
@@ -42,33 +44,20 @@ describe('/applications', function () {
     });
 
     it('should create a request for the application if the app_key exists', function(done) {
-      spyOn(MockResponse.prototype, 'send').andCallThrough();
-      var data = {
-        request: {
-          environment: 'Production',
-          endpoint: 'Service',
-          success: true
-        }
+      var requestOne = {
+        request: {environment: 'Production', endpoint: 'Service', success: true }
       };
-      var data2 = {
-        request: {
-          environment: 'Production',
-          endpoint: 'Service',
-          success: false
-        }
+      var requestTwo = {
+        request: {environment: 'Production', endpoint: 'Service', success: false }
       };
-      var data3 = {
-        request: {
-          environment: 'QA',
-          endpoint: 'OtherService',
-          success: false
-        }
+      var requestThree = {
+        request: {environment: 'QA', endpoint: 'OtherService', success: false }
       };
 
       new Application({ name: 'The app' }).save(function(err, app) {
-        post('/requests/' + app.key, data, function () {
-          post('/requests/' + app.key, data2, function () {
-            post('/requests/' + app.key, data3, function () {
+        post('/requests/' + app.key, requestOne, function () {
+          post('/requests/' + app.key, requestTwo, function () {
+            post('/requests/' + app.key, requestThree, function () {
               expect(MockResponse.prototype.send).toHaveBeenCalledWith('Success');
 
               Application.findOne({ key: app.key }, function(err, app) {
@@ -90,7 +79,6 @@ describe('/applications', function () {
           });
         });
       });
-
     });
   });
 

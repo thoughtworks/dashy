@@ -7,10 +7,10 @@ describe('Application', function () {
   describe('before save', function () {
     var app;
 
-    beforeEach(function() {
+    beforeEach(function () {
       runs(function () {
-        new Application({name: 'App Name'}).save(function (err, a) {
-          app = a;
+        new Application({name: 'App Name'}).save(function (err, application) {
+          app = application;
         });
       });
 
@@ -23,9 +23,9 @@ describe('Application', function () {
       expect(app.key).toEqual(jasmine.any(String));
     });
 
-    it('should create a key only if the recrod is new', function (done) {
-      app.save(function (err, a) {
-        expect(app.key).toEqual(a.key);
+    it('should generate a new key only if the recrod is new', function (done) {
+      app.save(function (err, application) {
+        expect(app.key).toEqual(application.key);
         done();
       });
     });
