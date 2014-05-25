@@ -22,12 +22,9 @@ block content
             | &nbsp;Create an App
 
 
-
-
     .row
-      .col-sm-2
-        .environments
-          a(href="javascript:;", ng-repeat="(env, data) in activeApp.requests", active="{{env}}") {{env}}
+      .col-sm-2.environments
+        a(href="javascript:;", ng-repeat="(env, data) in activeApp.requests", active-env="{{env}}") {{env}}
 
       .col-sm-10.requests
         p(ng-show="!activeApp.requests") No requests sent to {{activeApp.name}} yet
@@ -38,7 +35,7 @@ block content
             ul
               li(ng-repeat="r in requests | orderBy:'-date' | limitTo: 5 track by $index")
                 span(ng-class="{'success': r.success, 'fail': !r.success}") &nbsp;
-                {{r.date | timeAgo}}
+                span(time-ago="{{r.date}}") {{r.date | timeAgo}}
 
 
 
@@ -87,4 +84,3 @@ block js
         }, 1000);
       });
     });
-
