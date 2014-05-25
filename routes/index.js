@@ -23,6 +23,16 @@ module.exports = function (io) {
 
   router.post('/requests/:app_key', function(req, res) {
     var appKey = req.params.app_key;
+    var data = req.body.request;
+
+    if(!data) {
+      res.send('Incorrect data.')
+      return;
+    }
+    if(data.endpoint === undefined || data.success === undefined) {
+      res.send('Incorrect data.')
+      return;
+    }
 
     Application.findOne({key: appKey}, function (err, app) {
       if(!app || err) {
@@ -30,7 +40,6 @@ module.exports = function (io) {
         return;
       }
 
-      var data = req.body.request;
       var environment = data.environment || 'Default';
 
       app.requests = app.requests || {};

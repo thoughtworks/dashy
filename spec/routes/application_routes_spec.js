@@ -2,8 +2,8 @@ describe('/applications', function () {
 
   beforeEach(cleanDb);
 
-  describe('GET /', function() {
-    it('should redirect to new app page if there is no apps yet', function(done) {
+  describe('GET /', function () {
+    it('should redirect to new app page if there is no apps yet', function (done) {
       spyOn(MockResponse.prototype, 'redirect').andCallThrough();
 
       get('/', function () {
@@ -29,28 +29,31 @@ describe('/applications', function () {
     });
   });
 
-  describe('POST /request/:app_key', function() {
+  describe('POST /request/:app_key', function () {
     beforeEach(function () {
       spyOn(MockResponse.prototype, 'send').andCallThrough();
     });
 
-    describe('with a invalid key', function() {
+    describe('with a invalid key', function () {
       it('should send a invalid key message', function (done) {
-        post('/requests/invalid_key', {}, function() {
+        var data = {
+          request: {endpoint: 'Service', success: true }
+        };
+        post('/requests/invalid_key', data, function () {
           expect(MockResponse.prototype.send).toHaveBeenCalledWith('Invalid application key. Please make sure the given key is correct.')
           done();
         });
       });
     });
 
-    describe('with a valid key', function() {
+    describe('with a valid key', function () {
       var appKey;
 
       beforeEach(function () {
         runs(function () {
           appKey = undefined;
 
-          new Application({ name: 'The app' }).save(function(err, app) {
+          new Application({ name: 'The app' }).save(function (err, app) {
             appKey = app.key;
           });
         });
@@ -60,11 +63,11 @@ describe('/applications', function () {
         });
       });
 
-      it('should add requests for the application if the app_key exists', function(done) {
+      it('should add requests for the application if the app_key exists', function (done) {
         doRequestsForApp(appKey, function () {
           expect(MockResponse.prototype.send).toHaveBeenCalledWith('Success');
 
-          Application.findOne({ key: appKey }, function(err, app) {
+          Application.findOne({ key: appKey }, function (err, app) {
             expect(app.requests['Production']).toBeDefined();
             expect(app.requests['Production']['Service'].length).toEqual(2);
             expect(app.requests['Production']['Service'][0].date).toEqual(jasmine.any(Date));
@@ -88,7 +91,7 @@ describe('/applications', function () {
         };
 
         post('/requests/' + appKey, data, function () {
-          Application.findOne({ key: appKey }, function(err, app) {
+          Application.findOne({ key: appKey }, function (err, app) {
             expect(app.requests).toBeDefined();
             expect(app.requests['Default']['Service']).toBeDefined();
             expect(app.requests['Default']['Service'].length).toEqual(1);
@@ -97,11 +100,43 @@ describe('/applications', function () {
           });
         });
       });
+
+      describe('without invalid data', function () {
+        function invalidRequestScenario (data, done) {
+          post('/requests/' + appKey, data, function () {
+            Application.findOne({ key: appKey }, function (err, app) {
+              expect(app.requests).not.toBeDefined();
+              expect(MockResponse.prototype.send).toHaveBeenCalledWith('Incorrect data.')
+              done();
+            });
+          });
+        }
+
+        it('should not create the request if there is no data', function (done) {
+          invalidRequestScenario({}, done);
+        });
+
+        it('should not create the request if endpoint param was not given', function (done) {
+          var data = {
+            request: {environment: 'Test', success: true }
+          };
+
+          invalidRequestScenario(data, done);
+        });
+
+        it('should not create the request if success param was not given', function (done) {
+          var data = {
+            request: {environment: 'Test', endpoint: 'Service' }
+          };
+
+          invalidRequestScenario(data, done);
+        });
+      });
     });
   });
 
-  describe('POST /new', function(done) {
-    it('should create an Application', function(done) {
+  describe('POST /new', function (done) {
+    it('should create an Application', function (done) {
       spyOn(MockResponse.prototype, 'redirect').andCallThrough();
 
       var data = {
