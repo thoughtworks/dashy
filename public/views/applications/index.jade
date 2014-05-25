@@ -74,6 +74,9 @@ block js
 
         var el = $('[endpoint="' + data.environment + '_' + data.endpoint + '"] li:first');
         el.addClass('spawned');
+        setTimeout(function () {
+          el.removeClass('spawned');
+        }, 1000);
       });
     });
 
