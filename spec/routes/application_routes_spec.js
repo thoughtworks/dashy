@@ -1,8 +1,7 @@
 describe('/applications', function () {
 
-  beforeEach(function() {
-    cleanDb();
-  });
+  beforeEach(cleanDb);
+  afterEach(cleanDb);
 
   describe('GET /', function() {
     it('should redirect to new app page if there is no apps yet', function(done) {
@@ -36,46 +35,48 @@ describe('/applications', function () {
       spyOn(MockResponse.prototype, 'send').andCallThrough();
     });
 
-    it('should validate if the app_key exists', function (done) {
-      post('/requests/invalid_key', {}, function() {
-        expect(MockResponse.prototype.send).toHaveBeenCalledWith('Invalid application key. Please make sure the given key is correct.')
-        done();
+    describe('with a invalid key', function() {
+      it('should send a invalid key message', function (done) {
+        post('/requests/invalid_key', {}, function() {
+          expect(MockResponse.prototype.send).toHaveBeenCalledWith('Invalid application key. Please make sure the given key is correct.')
+          done();
+        });
       });
     });
 
-    it('should create a request for the application if the app_key exists', function(done) {
-      var requestOne = {
-        request: {environment: 'Production', endpoint: 'Service', success: true }
-      };
-      var requestTwo = {
-        request: {environment: 'Production', endpoint: 'Service', success: false }
-      };
-      var requestThree = {
-        request: {environment: 'QA', endpoint: 'OtherService', success: false }
-      };
+    describe('with a valid key', function() {
+      var appKey;
 
-      new Application({ name: 'The app' }).save(function(err, app) {
-        post('/requests/' + app.key, requestOne, function () {
-          post('/requests/' + app.key, requestTwo, function () {
-            post('/requests/' + app.key, requestThree, function () {
-              expect(MockResponse.prototype.send).toHaveBeenCalledWith('Success');
+      beforeEach(function () {
+        runs(function () {
+          new Application({ name: 'The app' }).save(function(err, app) {
+            appKey = app.key;
+          });
+        });
 
-              Application.findOne({ key: app.key }, function(err, app) {
-                expect(app.requests['Production']).toBeDefined();
-                expect(app.requests['Production']['Service'].length).toEqual(2);
-                expect(app.requests['Production']['Service'][0].date).toEqual(jasmine.any(Date));
-                expect(app.requests['Production']['Service'][0].success).toEqual(true);
-                expect(app.requests['Production']['Service'][1].date).toEqual(jasmine.any(Date));
-                expect(app.requests['Production']['Service'][1].success).toEqual(false);
+        waitsFor(function () {
+          return appKey !== undefined;
+        });
+      });
 
-                expect(app.requests['QA']).toBeDefined();
-                expect(app.requests['QA']['OtherService'].length).toEqual(1);
-                expect(app.requests['QA']['OtherService'][0].date).toEqual(jasmine.any(Date));
-                expect(app.requests['QA']['OtherService'][0].success).toEqual(false);
+      it('should add requests for the application if the app_key exists', function(done) {
+        doRequestsForApp(appKey, function () {
+          expect(MockResponse.prototype.send).toHaveBeenCalledWith('Success');
 
-                done();
-              });
-            });
+          Application.findOne({ key: appKey }, function(err, app) {
+            expect(app.requests['Production']).toBeDefined();
+            expect(app.requests['Production']['Service'].length).toEqual(2);
+            expect(app.requests['Production']['Service'][0].date).toEqual(jasmine.any(Date));
+            expect(app.requests['Production']['Service'][0].success).toEqual(true);
+            expect(app.requests['Production']['Service'][1].date).toEqual(jasmine.any(Date));
+            expect(app.requests['Production']['Service'][1].success).toEqual(false);
+
+            expect(app.requests['QA']).toBeDefined();
+            expect(app.requests['QA']['OtherService'].length).toEqual(1);
+            expect(app.requests['QA']['OtherService'][0].date).toEqual(jasmine.any(Date));
+            expect(app.requests['QA']['OtherService'][0].success).toEqual(false);
+
+            done();
           });
         });
       });
@@ -103,5 +104,25 @@ describe('/applications', function () {
 
     });
   });
-
 });
+
+
+function doRequestsForApp(appKey, callback) {
+  var requestOne = {
+    request: {environment: 'Production', endpoint: 'Service', success: true }
+  };
+  var requestTwo = {
+    request: {environment: 'Production', endpoint: 'Service', success: false }
+  };
+  var requestThree = {
+    request: {environment: 'QA', endpoint: 'OtherService', success: false }
+  };
+
+  post('/requests/' + appKey, requestOne, function () {
+    post('/requests/' + appKey, requestTwo, function () {
+      post('/requests/' + appKey, requestThree, function () {
+        callback && callback();
+      });
+    });
+  });
+}
