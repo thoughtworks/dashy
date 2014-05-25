@@ -1,5 +1,5 @@
 module.exports = function (io) {
-  var Application = require('../models/Application');
+  var Application = require('../models/application');
   var router = require('express').Router();
 
   var socket;
