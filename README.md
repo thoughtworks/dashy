@@ -16,7 +16,7 @@ Requirements:
 
 `$ npm start`
 
-`$ grunt test`
+`$ npm test`
 
 
 #### Send a request
