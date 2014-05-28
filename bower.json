@@ -1,0 +1,14 @@
+{
+  "name": "dashy",
+  "version": "0.0.1",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ],
+  "dependencies": {
+    "angular": "~1.2.16",
+    "jquery": "~2.1.1",
+    "moment": "~2.6.0"
+  }
+}

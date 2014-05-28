@@ -1,3 +1,4 @@
 node_modules
 dashy.sublime-*
 npm-debug.log
+public/assets/js/vendor
