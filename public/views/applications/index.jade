@@ -15,12 +15,13 @@ block content
         input(type="text", value="{{activeApp.key}}", disabled).form-control
 
 
+    p(ng-show="!activeApp.requests") No requests sent to {{activeApp.name}} yet
+
     .row
       .col-sm-2.environments
         a(href="javascript:;", ng-repeat="(env, data) in activeApp.requests", active-env="{{env}}") {{env}}
 
       .col-sm-10.requests
-        p(ng-show="!activeApp.requests") No requests sent to {{activeApp.name}} yet
 
         ul(ng-show="activeApp.requests")
           li.request(ng-repeat="(endpoint, requests) in activeApp.requests[activeEnv]", endpoint="{{activeEnv}}_{{endpoint}}")
