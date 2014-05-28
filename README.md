@@ -8,20 +8,21 @@ Dashy
 ### Get started
 
 Requirements:
-- Install MongoDb: http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/
+- [http://nodejs.org/](Node)
+- [http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/](MongoDb):
 
-`$ npm install`
+I. Clone the project
 
-`$ mongod --fork # Init mongo in a child process`
+II. Install dependencies `$ npm install`
 
-`$ npm start`
+III. Init MonboDb `$ mongod --fork # Init mongo in a child process`
 
-`$ npm test`
+IV. Start the server `$ npm start`
 
 
 #### Send a request
 
-curl --data "request[environment]=<ENVIRONMENT>&request[endpoint]=<ENDPOINT>&request[success]=<true|false>" http://localhost:3000/requests/:app_id
+`curl --data "request[environment]=<ENVIRONMENT>&request[endpoint]=<ENDPOINT>&request[success]=<true|false>" http://localhost:3000/requests/:app_id`
 
 
 ## License
