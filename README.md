@@ -8,8 +8,8 @@ Dashy
 ### Get started
 
 Requirements:
-- [http://nodejs.org/](Node)
-- [http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/](MongoDb):
+- [Node](http://nodejs.org/)
+- [MongoDb](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/)
 
 I. Clone the project
 
