@@ -1,13 +1,12 @@
-@import 'bootstrap/bootstrap.less';
+@import 'bootstrap/bootstrap';
+@import 'helpers';
+@import 'animations';
 
 body {
   padding: 20px 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: #fff;
 
   > header {
-    margin-bottom: -8px;
-
     a {
       font-family: 'Raleway', 'Helvetica Neue', Helvetica, 'Myriad Pro', 'Lucida Grande', sans-serif;
       font-size: 47px;
@@ -25,13 +24,10 @@ ul {
   list-style: none;
 }
 
+
 #apps {
   > header {
-    margin: 20px 0 30px;
-
-    p {
-      margin-top: 20px;
-    }
+    margin: 20px 0 40px;
 
     .select {
       width: 230px;
@@ -52,25 +48,20 @@ ul {
           -webkit-transform: rotate(90deg);
           transform: rotate(90deg);
         }
-
-        &:hover {
-          background-color: #3B9BC7;
-
-        }
-        &.active {
-          background-color: #0D75A5;
-          color: #fff;
-        }
       }
       .options {
         position: absolute;
         top: 100%;
         width: 100%;
         background-color: #eee;
+        z-index: 10;
 
         a {
           display: block;
           padding: 10px;
+          color: #666;
+
+          .default-hover;
         }
       }
     }
@@ -90,9 +81,8 @@ ul {
       color: #666;
       display: block;
 
-      &:hover {
-        background-color: lighten(#3B9BC7, 40%);
-      }
+      .default-hover;
+
       &.active {
         background-color: #3B9BC7;
         color: #fff;
@@ -150,28 +140,4 @@ ul {
   form {
     margin: 3px 10px;
   }
-}
-
-.border-radius(@radius) {
-  .border-top-radius(@radius);
-  .border-bottom-radius(@radius);
-}
-
-@-webkit-keyframes spawn {
-  0% {
-    background-color: transparent;
-  }
-
-  20% {
-    background-color: #FFFF6B;
-  }
-
-  100% {
-    background-color: transparent;
-  }
-}
-
-.spawned {
-  .animation-duration(1s);
-  .animation-name(spawn);
 }
