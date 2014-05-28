@@ -44,7 +44,7 @@ block js
         $rootScope.activeEnv = Object.keys($rootScope.activeApp.requests)[0];
       }
 
-      var socket = io.connect('http://localhost:3000/');
+      var socket = io.connect(window.location.origin);
       socket.on('newRequest', function (data) {
         $rootScope.$apply(function () {
           for(var i in $rootScope.apps) {
