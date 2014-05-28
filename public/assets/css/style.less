@@ -69,7 +69,13 @@ ul {
     .key {
       margin-left: 20px;
       position: relative;
-      top: 10px;
+      top: 3px;
+
+      input {
+        cursor: text;
+        width: 315px;
+        background-color: #f8f8f8;
+      }
     }
   }
 
@@ -121,10 +127,10 @@ ul {
         margin-right: 10px;
 
         &.success {
-          background-color: #7CC57C;
+          background: linear-gradient(#7CC57C, lighten(#7CC57C, 10%));
         }
         &.fail {
-          background-color: #CF6262;
+          background: linear-gradient(#CF6262, lighten(#CF6262, 10%));
         }
       }
     }

@@ -11,7 +11,8 @@ block content
           li(ng-repeat="app in apps")
             a(href="javascript:;", ng-click="$parent.activeApp = app; $parent.open = false") {{app.name}}
 
-      span.key Key: {{activeApp.key}}
+      span.key.form-inline App ID:&nbsp;
+        input(type="text", value="{{activeApp.key}}", disabled).form-control
 
 
     .row
