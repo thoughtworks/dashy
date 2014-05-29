@@ -14,7 +14,16 @@ module.exports = function (grunt) {
         options: {
           singleRun: true,
           frameworks: ['jasmine'],
-          files: ['public/assets/js/test/**/*.js'],
+          files: [
+            'public/assets/js/src/vendor/jquery/dist/jquery.js',
+            'public/assets/js/src/vendor/angular/angular.js',
+            'public/assets/js/src/vendor/angular-route/angular-route.js',
+            'public/assets/js/src/vendor/angular-mocks/angular-mocks.js',
+            'public/assets/js/src/vendor/moment/moment.js',
+            'public/assets/js/src/app.js',
+            'public/assets/js/src/*.js',
+            'public/assets/js/test/**/*.js'
+          ],
           browsers: ['PhantomJS']
         }
       }
@@ -24,6 +33,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-karma');
 
-  grunt.registerTask('test', ['exec:test', "karma:unit"]);
+  grunt.registerTask('test', ['exec:test']);
   grunt.registerTask('watch_test', ['exec:watch_test']);
 };

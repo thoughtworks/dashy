@@ -4,8 +4,7 @@ block content
   #apps
     header.clearfix
       .select.pull-left
-        a(href="javascript:;", ng-click="open = !open", ng-class="{'active': open}")
-          {{activeApp.name}}
+        a(href="javascript:;", ng-click="open = !open", ng-class="{'active': open}") {{activeApp.name}}
           i.glyphicon.glyphicon-chevron-right
         ul.options(ng-show="open")
           li(ng-repeat="app in apps")
