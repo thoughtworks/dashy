@@ -7,7 +7,7 @@ describe('/applications', function () {
       spyOn(MockResponse.prototype, 'redirect').andCallThrough();
 
       get('/', function () {
-        expect(MockResponse.prototype.redirect).toHaveBeenCalledWith('/applications/new');
+        expect(MockResponse.prototype.redirect).toHaveBeenCalledWith('/partials/new');
         done();
       });
     });
@@ -18,7 +18,7 @@ describe('/applications', function () {
       new Application({name: 'The app'}).save(function (err, app) {
         get('/', function () {
           Application.find(function (err, apps) {
-            expect(MockResponse.prototype.render).toHaveBeenCalledWith('applications/index', {
+            expect(MockResponse.prototype.render).toHaveBeenCalledWith('partials/index', {
               apps: jasmine.any(Array)
             });
 
