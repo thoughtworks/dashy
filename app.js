@@ -37,7 +37,6 @@ function setupDatabase () {
 }
 
 function setupViews () {
-  app.set('views', path.join(__dirname, 'public/views'));
   app.set('view engine', 'jade');
 }
 
@@ -47,8 +46,8 @@ function setupMiddlewares () {
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded());
   app.use(cookieParser());
-  app.use(require('less-middleware')(path.join(__dirname, 'public/assets')));
-  app.use(express.static(path.join(__dirname, 'public/assets')));
+  app.use(require('less-middleware')(path.join(__dirname, 'public')));
+  app.use(express.static(path.join(__dirname, 'public')));
 }
 
 function setupErrorHandlers () {

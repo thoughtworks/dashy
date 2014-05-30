@@ -15,14 +15,14 @@ module.exports = function (grunt) {
           singleRun: true,
           frameworks: ['jasmine'],
           files: [
-            'public/assets/js/src/vendor/jquery/dist/jquery.js',
-            'public/assets/js/src/vendor/angular/angular.js',
-            'public/assets/js/src/vendor/angular-route/angular-route.js',
-            'public/assets/js/src/vendor/angular-mocks/angular-mocks.js',
-            'public/assets/js/src/vendor/moment/moment.js',
-            'public/assets/js/src/app.js',
-            'public/assets/js/src/*.js',
-            'public/assets/js/test/**/*.js'
+            'public/js/src/vendor/jquery/dist/jquery.js',
+            'public/js/src/vendor/angular/angular.js',
+            'public/js/src/vendor/angular-route/angular-route.js',
+            'public/js/src/vendor/angular-mocks/angular-mocks.js',
+            'public/js/src/vendor/moment/moment.js',
+            'public/js/src/app.js',
+            'public/js/src/*.js',
+            'public/js/test/**/*.js'
           ],
           browsers: ['PhantomJS']
         }

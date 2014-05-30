@@ -11,12 +11,12 @@ module.exports = function (io) {
   router.get('/', function(req, res) {
     Application.find().sort({name: 1}).exec(function (err, apps) {
       if(apps.length > 0) {
-        res.render('applications/index', {
+        res.render('partials/index', {
           apps: apps
         });
       }
       else {
-        res.redirect('/applications/new');
+        res.redirect('/partials/new');
       }
     });
   });
@@ -66,13 +66,13 @@ module.exports = function (io) {
   });
 
   router.get('/applications/new', function (req, res) {
-    res.render('applications/new');
+    res.render('partials/new');
   });
 
   router.post('/applications/new', function (req, res) {
     new Application(req.body.application).save(function (err, app) {
       if(err) {
-        res.render('applications/new', {
+        res.render('partials/new', {
           application: req.body.application,
           error: err
         });
