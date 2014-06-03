@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node ./app.js",
+    "start": "./node_modules/.bin/nf start -p 3000",
     "test": "./node_modules/.bin/grunt test",
     "prepublish": "./node_modules/.bin/bower install"
   },
@@ -17,7 +17,8 @@
     "mongoose": "^3.8.9",
     "morgan": "~1.0.0",
     "socket.io": "^0.9.16",
-    "static-favicon": "~1.0.0"
+    "static-favicon": "~1.0.0",
+    "foreman": "~0.3.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
