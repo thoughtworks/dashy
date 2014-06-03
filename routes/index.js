@@ -16,7 +16,7 @@ module.exports = function (io) {
         });
       }
       else {
-        res.redirect('/partials/new');
+        res.redirect('/applications/new');
       }
     });
   });
