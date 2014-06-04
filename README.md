@@ -5,19 +5,29 @@
 Dashboard that reports status of your integration points
 
 
-### Get started
+# Get started
 
 Requirements:
 * [Node](http://nodejs.org/)
 * [MongoDb](http://docs.mongodb.org/manual/installation/)
 
-I. Clone the project
+## Installation
 
-II. Install the project `$ make`
+    $ npm install dashy -g
 
-III. Start the server `$ npm start`
+## Running
 
-#### Report your request status
+    $ dashy start
+
+### Report your request status
 
     curl --data "request[environment]=<ENVIRONMENT>&request[endpoint]=<ENDPOINT>&request[success]=<true|false>" \
     http://localhost:3000/requests/:app_id
+
+### Contributing
+
+I. Clone `$ git clone git@github.com:thoughtworks/dashy.git`
+
+II. Install `$ make`
+
+III. Start the server `$ npm start`
