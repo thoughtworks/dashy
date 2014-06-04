@@ -2,6 +2,9 @@
   "name": "dashy",
   "version": "0.0.1",
   "private": true,
+  "bin": {
+    "dashy": "dashy.js"
+  },
   "scripts": {
     "start": "./node_modules/.bin/nf start -p 3000",
     "test": "./node_modules/.bin/grunt test",
@@ -29,6 +32,15 @@
     "karma": "^0.12.16",
     "karma-jasmine": "^0.1.5",
     "grunt-karma": "^0.8.3",
-    "karma-phantomjs-launcher": "^0.1.4"
-  }
+    "karma-phantomjs-launcher": "^0.1.4",
+    "commander": "~2.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thoughtworks/dashy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thoughtworks/dashy/issues"
+  },
+  "preferGlobal": true
 }
