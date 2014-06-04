@@ -7,7 +7,7 @@ describe('/applications', function () {
       spyOn(MockResponse.prototype, 'redirect').andCallThrough();
 
       get('/', function () {
-        expect(MockResponse.prototype.redirect).toHaveBeenCalledWith('/partials/new');
+        expect(MockResponse.prototype.redirect).toHaveBeenCalledWith('/applications/new');
         done();
       });
     });
