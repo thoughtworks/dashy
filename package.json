@@ -1,6 +1,8 @@
 {
   "name": "dashy",
   "version": "0.0.1",
+  "homepage": "https://github.com/thoughtworks/dashy",
+  "description": "Dashboard that reports status of your integration points",
   "bin": {
     "dashy": "dashy.js"
   },

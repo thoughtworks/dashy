@@ -2,7 +2,7 @@
 
 ### Dashy
 
-Dashy
+Dashboard that reports status of your integration points
 
 
 ### Get started
