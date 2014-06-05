@@ -7,7 +7,8 @@ var express      = require('express'),
     app          = express(),
     server       = require('http').createServer(app),
     io           = require('socket.io').listen(server),
-    routes       = require('./routes/index')(io);
+    apiRoutes       = require('./routes/api')
+    routes       = require('./routes/routes');
 
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
@@ -29,7 +30,10 @@ function startServer () {
 }
 
 function setupRoutes () {
-  app.use('/', routes);
+  app.get('/', routes.index);
+  app.get('/partials/:name', routes.partials);
+
+  app.use('/api', apiRoutes);
 }
 
 function setupDatabase () {

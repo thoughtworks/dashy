@@ -1,10 +1,6 @@
 var router = require('express').Router();
 var Application = require('../models/application');
 
-router.get('/myIndex', function(req, res){
-  res.render('myIndex');
-});
-  
 router.get('/apps', function(req, res){
   Application.find().sort({name: 1}).exec(function (err, apps) {
     if (!err) {

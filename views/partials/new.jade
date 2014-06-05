@@ -1,9 +1,6 @@
-extends ../layout
+.new-form
+  h3 Create an Application
 
-block content
-  .new-form
-    h3 Create an Application
-
-    form.form-inline(method="post", action="/applications/new")
-      input.form-control(type="text", placeholder="Name", name="application[name]")
-      button(type="submit").btn.btn-success Create
+  form.form-inline(method="post", action="/applications/new")
+    input.form-control(type="text", placeholder="Name", name="application[name]")
+    button(type="submit").btn.btn-success Create
