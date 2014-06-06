@@ -24,7 +24,8 @@
     "static-favicon": "~1.0.0",
     "foreman": "~0.3.0",
     "commander": "~2.2.0",
-    "npm": "^1.4.13"
+    "npm": "^1.4.13",
+    "underscore": "^1.6.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

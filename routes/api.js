@@ -1,73 +1,93 @@
-var router = require('express').Router();
-var Application = require('../models/application');
+var router = require('express').Router(),
+  Application = require('../models/application'),
+  _ = require('underscore');
 
-router.get('/apps', function(req, res){
-  Application.find().sort({name: 1}).exec(function (err, apps) {
-    if (!err) {
-      res.send(apps);
-    }
+module.exports = function(io) {
+  var sockets = [];
+
+  io.sockets.on('connection', function (aSocket) {
+    sockets.push(aSocket);
   });
-});
 
-router.post('/requests/:app_key', function(req, res) {
-  var appKey = req.params.app_key;
-  var data = req.body.request;
+  io.sockets.on('disconnect', function (aSocket) {
+    sockets.splice(aSocket, 1);
+  });  
 
-  if(!data) {
-    res.send('Incorrect data.')
-    return;
-  }
-  if(data.endpoint === undefined || data.success === undefined) {
-    res.send('Incorrect data.')
-    return;
-  }
+  router.get('/apps/delete', function(req, res){
+    Application.remove().exec();
+    res.send(200);
+  });
 
-  Application.findOne({key: appKey}, function (err, app) {
-    if(!app || err) {
-      res.send('Invalid application key. Please make sure the given key is correct.');
+  router.get('/apps', function(req, res){
+    Application.find().sort({name: 1}).exec(function (err, apps) {
+      if (!err) {
+        res.send(apps);
+      }
+    });
+  });
+
+  router.post('/requests/:app_key', function(req, res) {
+    var appKey = req.params.app_key;
+    var data = req.body.request;
+
+    if(!data) {
+      res.send('Incorrect data.')
+      return;
+    }
+    if(data.endpoint === undefined || data.success === undefined) {
+      res.send('Incorrect data.')
       return;
     }
 
-    var environment = data.environment || 'Default';
+    Application.findOne({key: appKey}, function (err, app) {
+      if(!app || err) {
+        res.send('Invalid application key. Please make sure the given key is correct.');
+        return;
+      }
 
-    app.requests = app.requests || {};
-    app.requests[environment] = app.requests[environment] || {};
-    app.requests[environment][data.endpoint] = app.requests[environment][data.endpoint] || [];
+      var environment = data.environment || 'Default';
 
-    var newRequest = {
-      success: toBool(data.success),
-      date: new Date()
-    };
-    app.requests[environment][data.endpoint].push(newRequest);
+      app.requests = app.requests || {};
+      app.requests[environment] = app.requests[environment] || {};
+      app.requests[environment][data.endpoint] = app.requests[environment][data.endpoint] || [];
 
-    socket && socket.emit('newRequest', {
-      appName: app.name,
-      environment: environment,
-      endpoint: data.endpoint,
-      request: newRequest
-    });
+      var newRequest = {
+        success: toBool(data.success),
+        date: new Date()
+      };
+      app.requests[environment][data.endpoint].push(newRequest);
 
-    Application.update({key: appKey}, {requests: app.requests}, function (err, numberAffected, raw) {
-      res.send('Success');
+      _.each(sockets, function(s){
+        s.emit('newRequest', {
+          appName: app.name,
+          environment: environment,
+          endpoint: data.endpoint,
+          request: newRequest
+        });
+      });
+
+      Application.update({key: appKey}, {requests: app.requests}, function (err, numberAffected, raw) {
+        res.send('Success');
+      });
     });
   });
-});
 
-router.post('/applications/new', function (req, res) {
-  new Application(req.body.application).save(function (err, app) {
-    if(err) {
-      res.send(err);
+  router.post('/applications/new', function (req, res) {
+    new Application(req.body.application).save(function (err, app) {
+      if(err) {
+        res.send(err);
+      }
+      res.send(200);
+    });
+  });
+
+  function toBool(value) {
+    if(typeof value === 'string') {
+      if(value === 'true') return true;
+      else if(value === 'false') return false;
     }
-    res.send(200);
-  });
-});
 
-function toBool(value) {
-  if(typeof value === 'string') {
-    if(value === 'true') return true;
-    else if(value === 'false') return false;
+    return value;
   }
-
-  return value;
+  return router;
 }
-module.exports = router;

@@ -1,12 +1,80 @@
 angular.module('app', ['ngRoute'])
 
+.controller('NewController', function($scope, $http, $location){
+  $scope.application = {};
+  
+  $scope.submitNewApp = function(app){
+    $http.post('/api/applications/new', {'application': app})
+    .success(function(data){
+      $location.path("/list");
+    });
+  };
+})
+
+.controller('ListController', function($rootScope, $scope, $http, $location){
+  $scope.openClick = function(){
+    $scope.open = !$scope.open;  
+  }
+
+  $scope.selectAppClick = function(app){
+    $scope.activeApp = app;
+    $scope.open = false
+  }
+  
+  $http.get('/api/apps').success(function(data){
+    $scope.apps = data;
+    $scope.activeApp = data[0];
+    
+    if($scope.activeApp.requests) {
+      $scope.activeEnd = Object.keys($scope.activeApp.requests)[0];
+      $rootScope.activeEnv = $scope.activeEnv;
+    }
+
+    var socket = io.connect(window.location.origin);
+    socket.on('newRequest', function (data) {
+      $scope.$apply(function () {
+        for(var i in $scope.apps) {
+          if($scope.apps[i].name === data.appName) {
+            if(data.appName === $scope.activeApp.name) {
+              $scope.activeApp.requests = $scope.activeApp.requests || {};
+              $scope.activeApp.requests[data.environment] = $scope.activeApp.requests[data.environment] || {};
+              $scope.activeApp.requests[data.environment][data.endpoint] = $scope.activeApp.requests[data.environment][data.endpoint] || [];
+              $scope.activeApp.requests[data.environment][data.endpoint].push(data.request);
+
+              if(!$scope.activeEnv) {
+                $scope.activeEnv = data.environment;
+                $rootScope.activeEnv = $scope.activeEnv;
+              }
+            }
+            else {
+              $scope.apps[i].requests = $scope.apps[i].requests || {};
+              $scope.apps[i].requests[data.environment] = $scope.apps[i].requests[data.environment] || {};
+              $scope.apps[i].requests[data.environment][data.endpoint] = $scope.apps[i].requests[data.environment][data.endpoint] || [];
+              $scope.apps[i].requests[data.environment][data.endpoint].push(data.request);
+            }
+
+            break;
+          }
+        }
+      });
+
+      var el = $('[endpoint="' + data.environment + '_' + data.endpoint + '"] li:first');
+      el.addClass('spawned');
+      setTimeout(function () {
+        el.removeClass('spawned');
+      }, 1000);
+    });
+    
+  });
+})
+
 .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
   $routeProvider.
-    when('/', {
-      templateUrl: 'partials/list'
+    when('/list', {
+      templateUrl: 'partials/list/'
     }).
     when('/new', {
-      templateUrl: 'partials/new'
+      templateUrl: 'partials/new/'
     }).
     otherwise({
       redirectTo: '/'
@@ -47,48 +115,14 @@ angular.module('app', ['ngRoute'])
   };
 })
 
-.run(function ($rootScope, $http) {
-        $http.get('/api/apps').success(function(data){
+.run(function($http, $location){
+  $http.get('/api/apps').success(function(data){
+    if (!data.length){
+      $location.path("/new/");
+    } else {
+      $location.path("/list/");
+    }
+  });
+})
 
-          $rootScope.apps = data;
-          $rootScope.activeApp = $rootScope.apps[0];
-
-          if($rootScope.activeApp.requests) {
-            $rootScope.activeEnv = Object.keys($rootScope.activeApp.requests)[0];
-          }
-
-          var socket = io.connect(window.location.origin);
-          socket.on('newRequest', function (data) {
-            $rootScope.$apply(function () {
-              for(var i in $rootScope.apps) {
-                if($rootScope.apps[i].name === data.appName) {
-                  if(data.appName === $rootScope.activeApp.name) {
-                    $rootScope.activeApp.requests = $rootScope.activeApp.requests || {};
-                    $rootScope.activeApp.requests[data.environment] = $rootScope.activeApp.requests[data.environment] || {};
-                    $rootScope.activeApp.requests[data.environment][data.endpoint] = $rootScope.activeApp.requests[data.environment][data.endpoint] || [];
-                    $rootScope.activeApp.requests[data.environment][data.endpoint].push(data.request);
-
-                    if(!$rootScope.activeEnv) {
-                      $rootScope.activeEnv = data.environment;
-                    }
-                  }
-                  else {
-                    $rootScope.apps[i].requests = $rootScope.apps[i].requests || {};
-                    $rootScope.apps[i].requests[data.environment] = $rootScope.apps[i].requests[data.environment] || {};
-                    $rootScope.apps[i].requests[data.environment][data.endpoint] = $rootScope.apps[i].requests[data.environment][data.endpoint] || [];
-                    $rootScope.apps[i].requests[data.environment][data.endpoint].push(data.request);
-                  }
-
-                  break;
-                }
-              }
-            });
-
-            var el = $('[endpoint="' + data.environment + '_' + data.endpoint + '"] li:first');
-            el.addClass('spawned');
-            setTimeout(function () {
-              el.removeClass('spawned');
-            }, 1000);
-          });
-        });
-      });
+;

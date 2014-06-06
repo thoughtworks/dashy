@@ -1,6 +1,6 @@
-.new-form
+.new-form(ng-controller="NewController as newCtrl")
   h3 Create an Application
 
-  form.form-inline(method="post", action="/applications/new")
-    input.form-control(type="text", placeholder="Name", name="application[name]")
+  form.form-inline(name="newAppForm" ng-submit="submitNewApp(application)")
+    input.form-control(type="text", placeholder="Name", name="application[name]", ng-model="application.name")
     button(type="submit").btn.btn-success Create

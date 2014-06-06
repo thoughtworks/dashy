@@ -1,15 +1,14 @@
-#apps
+#apps(ng-controller="ListController as listCtrl")
   header.clearfix
     .select.pull-left
-      a(href="javascript:;", ng-click="open = !open", ng-class="{'active': open}") {{activeApp.name}}
+      a(href="javascript:;", ng-click="openClick()", ng-class="{'active': open}") {{activeApp.name}}
         i.glyphicon.glyphicon-chevron-right
       ul.options(ng-show="open")
         li(ng-repeat="app in apps")
-          a(href="javascript:;", ng-click="$parent.activeApp = app; $parent.open = false") {{app.name}}
+          a(href="javascript:;", ng-click="list.selectAppClick(app);") {{app.name}}
 
     span.key.form-inline App ID:&nbsp;
       input(type="text", value="{{activeApp.key}}", disabled).form-control
-
 
   p(ng-show="!activeApp.requests") No requests sent to {{activeApp.name}} yet
 
