@@ -1,17 +1,7 @@
 var router = require('express').Router(),
-  Application = require('../models/application'),
-  _ = require('underscore');
+  Application = require('../models/application');
 
 module.exports = function(io) {
-  var sockets = [];
-
-  io.sockets.on('connection', function (aSocket) {
-    sockets.push(aSocket);
-  });
-
-  io.sockets.on('disconnect', function (aSocket) {
-    sockets.splice(aSocket, 1);
-  });  
 
   router.get('/apps/delete', function(req, res){
     Application.remove().exec();
@@ -34,6 +24,7 @@ module.exports = function(io) {
       res.send('Incorrect data.')
       return;
     }
+    
     if(data.endpoint === undefined || data.success === undefined) {
       res.send('Incorrect data.')
       return;
@@ -57,13 +48,11 @@ module.exports = function(io) {
       };
       app.requests[environment][data.endpoint].push(newRequest);
 
-      _.each(sockets, function(s){
-        s.emit('newRequest', {
-          appName: app.name,
-          environment: environment,
-          endpoint: data.endpoint,
-          request: newRequest
-        });
+      io.sockets.emit('newRequest', {
+        appName: app.name,
+        environment: environment,
+        endpoint: data.endpoint,
+        request: newRequest
       });
 
       Application.update({key: appKey}, {requests: app.requests}, function (err, numberAffected, raw) {
