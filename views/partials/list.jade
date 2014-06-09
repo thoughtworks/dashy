@@ -5,7 +5,7 @@
         i.glyphicon.glyphicon-chevron-right
       ul.options(ng-show="open")
         li(ng-repeat="app in apps")
-          a(href="javascript:;", ng-click="list.selectAppClick(app);") {{app.name}}
+          a(href="javascript:;", ng-click="selectAppClick(app)") {{app.name}}
 
     span.key.form-inline App ID:&nbsp;
       input(type="text", value="{{activeApp.key}}", disabled).form-control

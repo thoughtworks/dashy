@@ -79,7 +79,7 @@ angular.module('app', ['ngRoute'])
     otherwise({
       redirectTo: '/'
     });
-  $locationProvider.html5Mode(true);
+  //$locationProvider.html5Mode(true);
 }])
 
 .directive('activeEnv', function ($rootScope) {
