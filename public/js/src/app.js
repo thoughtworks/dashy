@@ -102,9 +102,11 @@ angular.module('app', ['ngRoute'])
 .directive('timeAgo', function () {
   return {
     link: function (scope, el, attrs) {
-      setInterval(function () {
-        el.text(moment(attrs.timeAgo).fromNow());
-      }, 60 * 1000);
+      scope.$watch("timeAgo", function () {
+        setInterval(function () {
+          el.text(moment(attrs.timeAgo).fromNow());
+        }, 60 * 1000);
+      });
     }
   };
 })
