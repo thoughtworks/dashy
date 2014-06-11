@@ -22,7 +22,7 @@ Requirements:
 ### Report your request status
 
     curl --data "request[environment]=<ENVIRONMENT>&request[endpoint]=<ENDPOINT>&request[success]=<true|false>" \
-    http://localhost:3000/requests/:app_id
+    http://localhost:3000/api/requests/:app_id
 
 ### Contributing
 
