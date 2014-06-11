@@ -9,7 +9,7 @@
   "scripts": {
     "start": "./node_modules/.bin/nf start -p 3000",
     "test": "./node_modules/.bin/grunt test",
-    "prepublish": "./node_modules/.bin/bower install"
+    "preinstall": "./node_modules/.bin/bower install"
   },
   "dependencies": {
     "body-parser": "~1.0.0",
