@@ -3,11 +3,6 @@ var router = require('express').Router(),
 
 module.exports = function(io) {
 
-  router.get('/apps/delete', function(req, res){
-    Application.remove().exec();
-    res.send(200);
-  });
-
   router.get('/apps', function(req, res){
     Application.find().sort({name: 1}).exec(function (err, apps) {
       if (!err) {
@@ -19,20 +14,19 @@ module.exports = function(io) {
   router.post('/requests/:app_key', function(req, res) {
     var appKey = req.params.app_key;
     var data = req.body.request;
-
     if(!data) {
-      res.send('Incorrect data.')
+      res.send(400, {error: 'Empty data.'});
       return;
     }
     
     if(data.endpoint === undefined || data.success === undefined) {
-      res.send('Incorrect data.')
+      res.send(400, {error: 'Invalid data.'})
       return;
     }
 
-    Application.findOne({key: appKey}, function (err, app) {
+    Application.findOne({key: appKey}, function (err, app) {      
       if(!app || err) {
-        res.send('Invalid application key. Please make sure the given key is correct.');
+        res.send(400, {error:'Invalid application key. Please make sure the given key is correct.'});
         return;
       }
 
@@ -48,7 +42,7 @@ module.exports = function(io) {
       };
       app.requests[environment][data.endpoint].push(newRequest);
 
-      io.sockets.emit('newRequest', {
+      io && io.sockets.emit('newRequest', {
         appName: app.name,
         environment: environment,
         endpoint: data.endpoint,
@@ -56,13 +50,17 @@ module.exports = function(io) {
       });
 
       Application.update({key: appKey}, {requests: app.requests}, function (err, numberAffected, raw) {
-        res.send('Success');
+        res.send(200);
       });
     });
   });
 
   router.post('/applications/new', function (req, res) {
-    new Application(req.body.application).save(function (err, app) {
+    var application = req.body.application;
+    if (!application.name) {
+      res.send(400, {error: 'Name is required.'})
+    }
+    new Application(application).save(function (err, app) {
       if(err) {
         res.send(err);
       }

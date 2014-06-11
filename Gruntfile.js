@@ -2,11 +2,13 @@ module.exports = function (grunt) {
   grunt.initConfig({
     exec: {
       test: {
-        command: './node_modules/jasmine-node/bin/jasmine-node spec/ --color --captureExceptions --verbose --forceexit'
+        // command: './node_modules/jasmine-node/bin/jasmine-node spec/ --color --captureExceptions --verbose --forceexit'
+        command: './node_modules/.bin/mocha --require should --reporter spec --check-leaks'
       },
 
       watch_test: {
-        command: './node_modules/jasmine-node/bin/jasmine-node spec/ --autotest --watch spec/ models/ config/ routes/ --color --captureExceptions'
+        // command: './node_modules/jasmine-node/bin/jasmine-node spec/ --autotest --watch spec/ models/ config/ routes/ --color --captureExceptions'
+        command: './node_modules/.bin/mocha --require should --reporter spec --check-leaks'
       }
     },
     karma: {
