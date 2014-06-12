@@ -99,17 +99,25 @@ angular.module('app', ['ngRoute'])
   }
 })
 
-.directive('timeAgo', function () {
+.directive('timeAgo', ['$interval', function ($interval) {
   return {
     link: function (scope, el, attrs) {
-      scope.$watch("timeAgo", function () {
-        setInterval(function () {
+      var timer;
+
+      scope.$watch(function () {
+        el.text(moment(attrs.timeAgo).fromNow());
+      });
+
+      timer = $interval(function () {
           el.text(moment(attrs.timeAgo).fromNow());
-        }, 60 * 1000);
+      }, 60 * 1000);
+
+      el.on('$destroy', function (){
+        $interval.cancel(timer);
       });
     }
   };
-})
+}])
 
 .filter('timeAgo', function () {
   return function (date) {
