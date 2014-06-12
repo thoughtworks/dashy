@@ -8,7 +8,7 @@ var express      = require('express'),
     server       = require('http').createServer(app),
     io           = require('socket.io').listen(server),
     apiRoutes    = require('./routes/api')(io)
-    routes       = require('./routes/routes');
+    ;
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
@@ -29,9 +29,6 @@ function startServer () {
 }
 
 function setupRoutes () {
-  app.get('/', routes.index);
-  app.get('/partials/:name', routes.partials);
-
   app.use('/api', apiRoutes);
 
   //retro-compatibility

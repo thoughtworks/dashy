@@ -1,0 +1,8 @@
+<div class="new-form" ng-controller="NewController as newCtrl">
+  <h3>Create an Application</h3>
+
+  <form class="form-inline" name="newAppForm" ng-submit="submitNewApp(application)">
+    <input class="form-control" type="text" placeholder="Name" name="application[name]" ng-model="application.name">
+    <button type="submit" class="btn btn-success">Create</button>
+  </form>
+</div>

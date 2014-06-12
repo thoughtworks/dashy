@@ -71,15 +71,14 @@ angular.module('app', ['ngRoute'])
 .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
   $routeProvider.
     when('/list', {
-      templateUrl: 'partials/list/'
+      templateUrl: 'partials/list.html'
     }).
     when('/new', {
-      templateUrl: 'partials/new/'
+      templateUrl: 'partials/new.html'
     }).
     otherwise({
       redirectTo: '/'
     });
-  //$locationProvider.html5Mode(true);
 }])
 
 .directive('activeEnv', function ($rootScope) {
@@ -127,10 +126,10 @@ angular.module('app', ['ngRoute'])
 
 .run(function($http, $location){
   $http.get('/api/apps').success(function(data){
-    if (!data.length){
-      $location.path("/new/");
+    if (data && data.length > 0){
+      $location.path("/list");
     } else {
-      $location.path("/list/");
+      $location.path("/new");
     }
   });
 })

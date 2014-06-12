@@ -1,0 +1,40 @@
+<div id="apps" ng-controller="ListController as listCtrl">
+  <header class="clearfix">
+    <div class="select pull-left">
+      <a href="javascript:;" ng-click="openClick()" ng-class="{'active': open}">{{activeApp.name}}
+        <i class="glyphicon glyphicon-chevron-right"></i>
+      </a>
+      <ul class="options" ng-show="open">
+        <li ng-repeat="app in apps">
+          <a href="javascript:;" ng-click="selectAppClick(app)">{{app.name}}</a>
+        </li>
+      </ul>
+    </div>
+
+    <span class="key form-inline">App ID:&nbsp;
+      <input type="text" value="{{activeApp.key}}" disabled="disabled" class="form-control">
+    </span>
+  </header>
+
+  <p ng-show="!activeApp.requests">No requests sent to {{activeApp.name}} yet</p>
+
+  <div class="row">
+    <div class="col-sm-2 environments">
+      <a href="javascript:;" ng-repeat="(env, data) in activeApp.requests" active-env="{{env}}">{{env}}</a>
+    </div>
+    <div class="col-sm-10 requests">
+
+      <ul ng-show="activeApp.requests">
+        <li class="request" ng-repeat="(endpoint, requests) in activeApp.requests[activeEnv]" endpoint="{{activeEnv}}_{{endpoint}}">
+          <h4>{{endpoint}}</h4>
+          <ul>
+            <li ng-repeat="r in requests | orderBy:'-date' | limitTo: 5 track by $index">
+              <span ng-class="{'success': r.success, 'fail': !r.success}">&nbsp;</span>
+              <span time-ago="{{r.date}}">{{r.date | timeAgo}}</span>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

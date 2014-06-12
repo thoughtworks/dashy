@@ -1,0 +1,24 @@
+  <!DOCTYPE html>
+<html ng-app="app">
+  <head>
+    <title>Dashy</title>
+    <link rel='stylesheet' href='/css/style.css'>
+    <link href='http://fonts.googleapis.com/css?family=Raleway:400,100,200,300' rel='stylesheet'>
+  </head>
+  <body>
+    <header>
+      <a href="/">Dashy</a>
+        <img src="/images/logo.png" width="50">
+    </header>
+    
+    <main ng-view></main>
+
+    <script src="/js/src/vendor/jquery/dist/jquery.min.js"></script>
+    <script src="/js/src/vendor/angular/angular.min.js"></script>
+    <script src="/js/src/vendor/angular-route/angular-route.min.js"></script>
+    <script src="/js/src/vendor/moment/min/moment.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/src/app.js"></script>
+
+  </body>
+</html>
