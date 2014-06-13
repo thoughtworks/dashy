@@ -7,7 +7,7 @@ var request = require('supertest')
 describe('Apps API', function() {
 
 beforeEach('clean database before testing', function(done){
-  Application.find().all().remove();
+  //Application.find().all().remove();
   done();
 });
   
