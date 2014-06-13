@@ -38,7 +38,8 @@ module.exports = function(io) {
 
       var newRequest = {
         success: toBool(data.success),
-        date: new Date()
+        date: new Date(),
+        environment: data.environment
       };
       app.requests[environment][data.endpoint].push(newRequest);
 

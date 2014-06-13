@@ -3,7 +3,13 @@ var request = require('supertest')
   , expect = require('chai').expect
   , Application = require('../models/application');
 
+
 describe('Apps API', function() {
+
+beforeEach('clean database before testing', function(done){
+  Application.find().all().remove();
+  done();
+});
   
   describe('GET /apps', function() {
     describe('when get resource /apps', function() {
@@ -118,11 +124,12 @@ describe('Apps API', function() {
         .end(function end(err, res){
           if (err) return done(err);
           Application.findOne({ key: appKey }, function (err, app) {
-            expect(app.requests['Production']).not.to.be.undefined;
-            expect(app.requests['Production']['Service']).not.to.be.undefined;
-            expect(app.requests['Production']['Service'].length).to.be.equal(1);
-            expect(app.requests['Production']['Service'][0].date).to.be.a('date');
-            expect(app.requests['Production']['Service'][0].success).to.be.equal(true);
+            expect(app.requests).not.to.be.undefined;
+            expect(app.requests['Service']).not.to.be.undefined;
+            expect(app.requests['Service'].length).to.be.equal(1);
+            expect(app.requests['Service'][0].date).to.be.a('date');
+            expect(app.requests['Service'][0].success).to.be.equal(true);
+            expect(app.requests['Service'][0].environment).to.be.equal('Production');
 
             done();
           });
