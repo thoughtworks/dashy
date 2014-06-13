@@ -70,6 +70,23 @@ angular.module('app', ['ngRoute'])
     });
 }])
 
+.directive('activeEnv', function ($rootScope) {
+  return {
+    link: function (scope, el, attrs) {
+      if($rootScope.activeEnv === attrs.activeEnv) {
+        el.addClass('active').siblings().removeClass('active');
+      }
+
+      el.click(function() {
+        el.addClass('active').siblings().removeClass('active');
+        $rootScope.$apply(function () {
+          $rootScope.activeEnv = attrs.activeEnv;
+        });
+      });
+    }
+  }
+})
+
 .directive('timeAgo', ['$interval', function ($interval) {
   return {
     link: function (scope, el, attrs) {
