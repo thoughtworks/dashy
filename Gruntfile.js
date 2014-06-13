@@ -7,6 +7,10 @@ module.exports = function (grunt) {
 
       watch_test: {
         command: './node_modules/.bin/mocha --require should --reporter spec --check-leaks'
+      },
+
+      publish: {
+        command: 'node publish'
       }
     },
     karma: {
@@ -35,4 +39,28 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', ['exec:test']);
   grunt.registerTask('watch_test', ['exec:watch_test']);
+
+  grunt.registerTask('publish', 'Publish the latest version of this plugin', function() {
+    var done = this.async(),
+      data = {
+        username: process.env.NPM_USERNAME,
+        password: process.env.NPM_PASSWORD,
+        email: process.env.NPM_EMAIL
+      }
+      npm = require('npm');
+    npm.load({}, function(err) {
+      npm.registry.adduser(data.username, data.password, data.email, function(err) {
+        if (err) {
+          console.log(err);
+          done(false);
+        } else {
+          npm.config.set("email", data.email, "user");
+          npm.commands.publish([], function(err) {
+            console.log(err || "Published to registry");
+            done(!err);
+          });
+        }
+      });
+    });
+  });
 };
