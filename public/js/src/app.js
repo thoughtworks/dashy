@@ -32,16 +32,14 @@ angular.module('app', ['ngRoute'])
           if($scope.apps[i].name === data.appName) {
             if(data.appName === $scope.activeApp.name) {
               $scope.activeApp.requests = $scope.activeApp.requests || {};
-              $scope.activeApp.requests[data.environment] = $scope.activeApp.requests[data.environment] || {};
-              $scope.activeApp.requests[data.environment][data.endpoint] = $scope.activeApp.requests[data.environment][data.endpoint] || [];
-              $scope.activeApp.requests[data.environment][data.endpoint].push(data.request);
+              $scope.activeApp.requests[data.endpoint] = $scope.activeApp.requests[data.endpoint] || [];
+              $scope.activeApp.requests[data.endpoint].push(data.request);
 
             }
             else {
               $scope.apps[i].requests = $scope.apps[i].requests || {};
-              $scope.apps[i].requests[data.environment] = $scope.apps[i].requests[data.environment] || {};
-              $scope.apps[i].requests[data.environment][data.endpoint] = $scope.apps[i].requests[data.environment][data.endpoint] || [];
-              $scope.apps[i].requests[data.environment][data.endpoint].push(data.request);
+              $scope.apps[i].requests[data.endpoint] = $scope.apps[i].requests[data.endpoint] || [];
+              $scope.apps[i].requests[data.endpoint].push(data.request);
             }
 
             break;
@@ -49,7 +47,7 @@ angular.module('app', ['ngRoute'])
         }
       });
 
-      var el = $('[endpoint="' + data.environment + '_' + data.endpoint + '"] li:first');
+      var el = $('[endpoint="' + $scope.activeApp.key + '_' + data.endpoint + '"] li:first');
       el.addClass('spawned');
       setTimeout(function () {
         el.removeClass('spawned');

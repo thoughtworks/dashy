@@ -33,14 +33,13 @@ module.exports = function(io) {
       var environment = data.environment || 'Default';
 
       app.requests = app.requests || {};
-      app.requests[environment] = app.requests[environment] || {};
-      app.requests[environment][data.endpoint] = app.requests[environment][data.endpoint] || [];
+      app.requests[data.endpoint] = app.requests[data.endpoint] || [];
 
       var newRequest = {
         success: toBool(data.success),
         date: new Date()
       };
-      app.requests[environment][data.endpoint].push(newRequest);
+      app.requests[data.endpoint].push(newRequest);
 
       io && io.sockets.emit('newRequest', {
         appName: app.name,
