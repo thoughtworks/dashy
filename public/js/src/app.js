@@ -24,11 +24,6 @@ angular.module('app', ['ngRoute'])
   $http.get('/api/apps').success(function(data){
     $scope.apps = data;
     $scope.activeApp = data[0];
-    
-    if($scope.activeApp.requests) {
-      $scope.activeEnd = Object.keys($scope.activeApp.requests)[0];
-      $rootScope.activeEnv = $scope.activeEnv;
-    }
 
     var socket = io.connect(window.location.origin);
     socket.on('newRequest', function (data) {
@@ -41,10 +36,6 @@ angular.module('app', ['ngRoute'])
               $scope.activeApp.requests[data.environment][data.endpoint] = $scope.activeApp.requests[data.environment][data.endpoint] || [];
               $scope.activeApp.requests[data.environment][data.endpoint].push(data.request);
 
-              if(!$scope.activeEnv) {
-                $scope.activeEnv = data.environment;
-                $rootScope.activeEnv = $scope.activeEnv;
-              }
             }
             else {
               $scope.apps[i].requests = $scope.apps[i].requests || {};
