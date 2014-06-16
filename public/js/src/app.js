@@ -4,7 +4,7 @@ angular.module('app', ['ngRoute'])
   $scope.application = {};
   
   $scope.submitNewApp = function(app){
-    $http.post('/api/applications/new', {'application': app})
+    $http.post('/api/applications', {'application': app})
     .success(function(data){
       $location.path("/list");
     });
@@ -18,7 +18,7 @@ angular.module('app', ['ngRoute'])
 
   $scope.selectAppClick = function(app){
     $scope.activeApp = app;
-    $scope.open = false
+    $scope.open = false;
   }
 
   $scope.search = function (query,items) {
@@ -50,7 +50,7 @@ angular.module('app', ['ngRoute'])
     return res;
   }
   
-  $http.get('/api/apps').success(function(data){
+  $http.get('/api/applications').success(function(data){
     $scope.apps = data;
     $scope.activeApp = data[0];
 
@@ -61,14 +61,14 @@ angular.module('app', ['ngRoute'])
           if($scope.apps[i].name === data.appName) {
             if(data.appName === $scope.activeApp.name) {
               $scope.activeApp.requests = $scope.activeApp.requests || {};
-              $scope.activeApp.requests[data.endpoint] = $scope.activeApp.requests[data.endpoint] || [];
-              $scope.activeApp.requests[data.endpoint].push(data.request);
+              $scope.activeApp.requests[data.service] = $scope.activeApp.requests[data.service] || [];
+              $scope.activeApp.requests[data.service].push(data.request);
 
             }
             else {
               $scope.apps[i].requests = $scope.apps[i].requests || {};
-              $scope.apps[i].requests[data.endpoint] = $scope.apps[i].requests[data.endpoint] || [];
-              $scope.apps[i].requests[data.endpoint].push(data.request);
+              $scope.apps[i].requests[data.service] = $scope.apps[i].requests[data.service] || [];
+              $scope.apps[i].requests[data.service].push(data.request);
             }
 
             break;
@@ -76,7 +76,7 @@ angular.module('app', ['ngRoute'])
         }
       });
 
-      var el = $('[endpoint="' + $scope.activeApp.key + '_' + data.endpoint + '"] li:first');
+      var el = $('[service="' + $scope.activeApp.key + '_' + data.service + '"] li:first');
       el.addClass('spawned');
       setTimeout(function () {
         el.removeClass('spawned');
@@ -126,7 +126,7 @@ angular.module('app', ['ngRoute'])
 })
 
 .run(function($http, $location){
-  $http.get('/api/apps').success(function(data){
+  $http.get('/api/applications').success(function(data){
     if (data && data.length > 0){
       $location.path("/list");
     } else {

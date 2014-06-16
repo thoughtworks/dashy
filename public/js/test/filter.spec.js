@@ -1,11 +1,21 @@
 describe('Filtering function inside ListController', function () {
 
+  var scope;
   beforeEach(angular.mock.inject(function ($rootScope, $controller) {
-      scope = $rootScope.$new();
-      $controller('ListController', {
-        $scope: scope
-      });
-    }));
+    scope = $rootScope.$new();
+    $controller('ListController', {
+      $scope: scope
+    });
+  }));
+
+  describe('when select an app', function(){
+    scope.selectAppClick(app);
+    it('should load all request', function(){
+      
+    });  
+  })
+
+  
 
   it('should get all items back if the query is an empty string', function (ListController) {
     expect(scope.search('',[{a:12}])).toEqual([{a:12}]);

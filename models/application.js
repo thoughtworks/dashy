@@ -2,8 +2,7 @@ var mongoose = require('mongoose');
 
 var schema = mongoose.Schema({
   name: String,
-  key: {type: String, unique: true},
-  requests: {}
+  key: {type: String, unique: true}
 });
 
 schema.pre('save', function (next) {

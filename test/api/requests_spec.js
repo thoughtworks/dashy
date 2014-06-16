@@ -1,52 +1,54 @@
 var request = require('supertest')
-  , app = require('../server')
+  , app = require('../../server')
   , expect = require('chai').expect
-  , Application = require('../models/application');
+  , Application = require('../../models/application')
+  , Request = require('../../models/request')
+  ;
 
 
-describe('Apps API', function() {
+describe('Requets API', function() {
 
-beforeEach('clean database before testing', function(done){
-  //Application.find().all().remove();
-  done();
-});
-  
-  describe('GET /apps', function() {
-    describe('when get resource /apps', function() {
+  describe('GET /api/requests/:app_key', function(){
+    describe('when get resource', function() {
       var appKey;      
-        
+      
+      //preparing database
       before(function(done) {
-        Application.remove({}, function (err) {
+        Application.remove({}, function(err) {
           if(err) console.error(err);
           new Application({ name: 'The app' }).save(function (err, app) {
             appKey = app.key;
+
+            Request.remove({}, function(err){
+              new Request({appKey: appKey, success:true, service:'Service', environment: 'Production'}).save();
+              new Request({appKey: appKey, success:false, service:'Service', environment: 'Production'}).save();
+              new Request({appKey: appKey, success:true, service:'Service', environment: 'QA'}).save();
+              new Request({appKey: 'AnotherAppKey' , success:false, service:'Service', environment: 'Test'}).save();
+              done();
+            });
           });
-          
-          done();
         });
       });
-      
-      it('should return an array of apps', function(done) {
+
+      it('should return an array requests', function(done){
         request(app)
-        .get('/api/apps')
+        .get('/api/requests/'+appKey)
         .expect('Content-Type', /json/)
         .expect(200)
         .end(function(err, res){
           if (err) return done(err);
 
-          var apps = JSON.parse(res.text);
+          var requests = JSON.parse(res.text);
 
-          expect(apps.length).to.not.equal(0);
-          expect(apps[0].name).to.equal('The app');
-          expect(apps[0].key).to.equal(appKey);
-
+          expect(requests.length).to.equal(3);
+          
           done();
         });
       });
     });
   });
 
-  describe('POST /api/request/:app_key', function () {
+  describe('POST /api/requests/:app_key', function () {
 
     describe('when request with empty data', function () {
       it('should send an empty data message', function (done) {
@@ -84,7 +86,7 @@ beforeEach('clean database before testing', function(done){
     describe('when request with invalid key', function () {
       it('should send a invalid key message', function (done) {
         var data = {
-          request: {endpoint: 'Service', success: true }
+          request: {service: 'Service', success: true }
         };
         request(app)
         .post('/api/requests/invalid_key')
@@ -106,8 +108,8 @@ beforeEach('clean database before testing', function(done){
       before(function(done){
         new Application({ name: 'The app' }).save(function (err, app) {
           appKey = app.key;
+          done();
         });
-        done();
       });
 
       it('should add requests for the application if the app_key exists', function (done) {
@@ -115,78 +117,30 @@ beforeEach('clean database before testing', function(done){
         .post('/api/requests/'+appKey)
         .send({
           request: {
-            environment: 'Production', 
-            endpoint: 'Service', 
-            success: true 
+            service: 'Service', 
+            success: true,
+            environment: 'Production',
+            metattr: 'metaValue'
           }
         })
         .expect(200)
         .end(function end(err, res){
           if (err) return done(err);
+          console.log(err);
           Application.findOne({ key: appKey }, function (err, app) {
-            expect(app.requests).not.to.be.undefined;
-            expect(app.requests['Service']).not.to.be.undefined;
-            expect(app.requests['Service'].length).to.be.equal(1);
-            expect(app.requests['Service'][0].date).to.be.a('date');
-            expect(app.requests['Service'][0].success).to.be.equal(true);
-            expect(app.requests['Service'][0].environment).to.be.equal('Production');
+            expect(app.key).to.be.equal(appKey);
+            Request.find({appKey: app.key}, function(err, requests) {
+              
+              expect(requests.length).to.be.equal(1);
+              expect(requests[0].date).to.be.a('date');
+              expect(requests[0].success).to.be.equal(true);
+              expect(requests[0].meta.environment).to.be.equal('Production');
+              expect(requests[0].service).to.be.equal('Service');
+              expect(requests[0].meta.metattr).to.be.equal('metaValue');
 
-            done();
+              done();
+            });
           });
-        });
-      });
-    });
-  });
-
-  describe('POST /applications/new', function() {
-    beforeEach(function(done) {
-      Application.remove({}, function (err) {
-        if(err) console.error(err);
-        
-        done();
-      });
-    });
-
-    describe('when post valid form', function() {
-      it('should save the application', function(done) {
-        request(app)
-        .post('/api/applications/new')
-        .send({
-          application: {
-            name: 'A Name'
-          }
-        })
-        .expect(200)
-        .end(function(err, res){
-          if (err) return done(err);
-
-          Application.find().exec(function(err, apps){
-            expect(apps.length).to.not.equal(0);
-            expect(apps[0].name).to.equal('A Name');
-          });
-
-          done();
-        });
-      });
-    });
-
-    describe('when post an invalid form', function() {
-      it('should not save the application', function(done) {
-        request(app)
-        .post('/api/applications/new')
-        .send({
-          application: {
-            name: undefined
-          }
-        })
-        .expect(400)
-        .expect('Content-Type', /json/)
-        .end(function(err, res){
-          if (err) return done(err);
-          
-          var result = JSON.parse(res.text);
-          expect(result.error).to.equal('Name is required.');
-          done();
         });
       });
     });

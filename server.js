@@ -1,13 +1,14 @@
-var express      = require('express'),
-    path         = require('path'),
-    favicon      = require('static-favicon'),
-    logger       = require('morgan'),
-    cookieParser = require('cookie-parser'),
-    bodyParser   = require('body-parser'),
-    app          = express(),
-    server       = require('http').createServer(app),
-    io           = require('socket.io').listen(server),
-    apiRoutes    = require('./routes/api')(io)
+var express           = require('express'),
+    path              = require('path'),
+    favicon           = require('static-favicon'),
+    logger            = require('morgan'),
+    cookieParser      = require('cookie-parser'),
+    bodyParser        = require('body-parser'),
+    app               = express(),
+    server            = require('http').createServer(app),
+    io                = require('socket.io').listen(server),
+    requestRouter     = require('./routes/requestRouter')(io),
+    applicationRouter = require('./routes/applicationRouter')()
     ;
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
@@ -29,10 +30,11 @@ function startServer () {
 }
 
 function setupRoutes () {
-  app.use('/api', apiRoutes);
+  app.use('/api/requests', requestRouter);
+  app.use('/api/applications', applicationRouter);
 
   //retro-compatibility
-  app.post('/requests/:app_key', apiRoutes.post('/requests/:app_key'));
+  app.post('/requests/:app_key', requestRouter.post('/:app_key'));
 }
 
 function setupDatabase () {
