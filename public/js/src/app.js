@@ -23,18 +23,30 @@ angular.module('app', ['ngRoute'])
 
   $scope.search = function (query,items) {
     if (!query) return items;
-    debugger;
-    query = query.toString();
+    var query = query.toString().toLowerCase().trim();
+    if (query==='') return items;
     res = {};
-    for (key in items){
-      if(items.hasOwnProperty(key)){
-        if(key.toString().search(query)>=0){
-          res[key]=items[key];
-        }else if(typeof items[key] === 'object'){
-          //this(query, items[]
+    function searchSubtree(node,subtree){
+      for (var key in node){
+        search_key = key.toLowerCase().toString().trim();
+        if(node.hasOwnProperty(key)){
+          if(search_key.search(query)>=0){
+            subtree[key]=node[key];
+          }else if(typeof node[key] === 'number' || typeof node[key] === 'string'){
+            if(node[key].toString().toLowerCase().search(query)>=0){
+              subtree[key]=node[key];
+            }
+          }else if(typeof node[key] === 'object'){
+            var sub_res = searchSubtree(node[key],{});
+            if (Object.keys(sub_res).length>0){
+              subtree[key]=node[key];
+            }
+          }
         }
       }
+      return subtree;
     }
+    res = searchSubtree(items, res);
     return res;
   }
   
