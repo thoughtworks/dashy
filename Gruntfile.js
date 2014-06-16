@@ -28,16 +28,34 @@ module.exports = function (grunt) {
           browsers: ['PhantomJS']
         }
       }
+    },
+    bump: {
+      options: {
+        files: ['package.json'],
+        updateConfigs: [],
+        commit: true,
+        commitMessage: 'Release v%VERSION%',
+        commitFiles: ['package.json'],
+        createTag: true,
+        tagName: 'v%VERSION%',
+        tagMessage: 'Version %VERSION%',
+        push: true,
+        pushTo: 'master',
+        gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d'
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-karma');
+  grunt.loadNpmTasks('grunt-bump');
 
   grunt.registerTask('test', ['exec:test', 'karma']);
   grunt.registerTask('watch_test', ['exec:watch_test']);
 
-  grunt.registerTask('publish', 'Publish the latest version of this plugin', function() {
+  grunt.registerTask('publish', 'Bump the version, Tag it, Push it and Publish to the npm', function() {
+    grunt.task.requires('bump:patch');
+
     var done = this.async(),
       data = {
         username: process.env.NPM_USERNAME,
