@@ -5,10 +5,6 @@ module.exports = function (grunt) {
         command: './node_modules/.bin/mocha --require should --reporter spec --check-leaks'
       },
 
-      clientTest:{
-        command: 'grunt karma'
-      },
-
       watch_test: {
         command: './node_modules/.bin/mocha --require should --reporter spec --check-leaks'
       }
@@ -38,7 +34,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-karma');
 
-  grunt.registerTask('test', ['exec:test', 'exec:clientTest']);
+  grunt.registerTask('test', ['exec:test', 'karma']);
   grunt.registerTask('watch_test', ['exec:watch_test']);
 
   grunt.registerTask('publish', 'Publish the latest version of this plugin', function() {
