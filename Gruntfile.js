@@ -40,7 +40,7 @@ module.exports = function (grunt) {
         tagName: 'v%VERSION%',
         tagMessage: 'Version %VERSION%',
         push: true,
-        pushTo: 'master',
+        pushTo: 'origin',
         gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d'
       }
     }
@@ -53,9 +53,9 @@ module.exports = function (grunt) {
   grunt.registerTask('test', ['exec:test', 'karma']);
   grunt.registerTask('watch_test', ['exec:watch_test']);
 
-  grunt.registerTask('publish', 'Bump the version, Tag it, Push it and Publish to the npm', function() {
-    grunt.task.requires('bump:patch');
+  grunt.registerTask('publish', ['bump:patch', 'npm_publish']);
 
+  grunt.registerTask('npm_publish', 'Publish to the npm', function() {
     var done = this.async(),
       data = {
         username: process.env.NPM_USERNAME,
