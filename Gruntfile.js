@@ -5,12 +5,12 @@ module.exports = function (grunt) {
         command: './node_modules/.bin/mocha --require should --reporter spec --check-leaks'
       },
 
-      watch_test: {
-        command: './node_modules/.bin/mocha --require should --reporter spec --check-leaks'
+      clientTest:{
+        command: 'grunt karma'
       },
 
-      publish: {
-        command: 'node publish'
+      watch_test: {
+        command: './node_modules/.bin/mocha --require should --reporter spec --check-leaks'
       }
     },
     karma: {
@@ -26,6 +26,7 @@ module.exports = function (grunt) {
             'public/js/src/vendor/moment/moment.js',
             'public/js/src/app.js',
             'public/js/src/*.js',
+            'public/js/test/testHelper.js',
             'public/js/test/**/*.js'
           ],
           browsers: ['PhantomJS']
@@ -37,7 +38,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-karma');
 
-  grunt.registerTask('test', ['exec:test']);
+  grunt.registerTask('test', ['exec:test', 'exec:clientTest']);
   grunt.registerTask('watch_test', ['exec:watch_test']);
 
   grunt.registerTask('publish', 'Publish the latest version of this plugin', function() {
