@@ -146,12 +146,12 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
   });
 });
 
-var underscore = angular.module('underscore', []);
-underscore.factory('_', function() {
+angular.module('underscore', [])
+.factory('_', function() {
   return window._;
 });
 
-var io = angular.module('socket.io', []);
-io.factory('io', function(){
+angular.module('socket.io', [])
+.factory('io', function(){
   return window.io;
 });
