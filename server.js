@@ -13,7 +13,6 @@ var express           = require('express'),
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-setupViews();
 setupMiddlewares();
 setupErrorHandlers();
 setupDatabase();
@@ -39,10 +38,6 @@ function setupRoutes () {
 
 function setupDatabase () {
   require('./config/database');
-}
-
-function setupViews () {
-  app.set('view engine', 'jade');
 }
 
 function setupMiddlewares () {
