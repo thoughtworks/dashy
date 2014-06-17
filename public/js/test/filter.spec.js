@@ -1,3 +1,34 @@
+describe('NewController', function () {
+  var scope, location;
+  beforeEach(angular.mock.inject(function ($rootScope, $controller, $location) {
+    scope = $rootScope.$new();
+    location = $location;
+
+    $controller('NewController', {
+      $scope: scope,
+      $location: location,
+      DashyAPI: {
+        postApplication: function(app, callback){
+          callback(app);
+        }
+      }
+    });
+  }));
+
+  describe('when loads', function(){
+    it('should have a application object', function(){
+      expect(scope.application).toEqual({});
+    });
+  });
+
+  describe('when submit a new application', function(){
+    it('should change the location to /list', function(){
+      scope.submitNewApp({name: 'name'})
+      expect(location.path()).toEqual('/list');
+    });
+  });
+});
+
 describe('ListController', function () {
 
   var scope;
@@ -6,9 +37,15 @@ describe('ListController', function () {
     $controller('ListController', {
       $scope: scope,
       DashyAPI: {
-        loadRequests: function (app, callback) {
+        getRequests: function (app, callback) {
           callback([]);
+        },
+        getApplications: function(callback){
+          callback([{name: 'My App', key: 'my key'}]);
         }
+      },
+      io: {
+        connect: function(url){}
       }
     });
   }));

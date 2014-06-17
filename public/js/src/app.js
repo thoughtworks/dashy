@@ -1,17 +1,16 @@
-angular.module('app', ['ngRoute', 'ui.utils', 'underscore'])
+angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
 
-.controller('NewController', function($scope, $http, $location){
+.controller('NewController', function($scope, $location, DashyAPI){
   $scope.application = {};
   
   $scope.submitNewApp = function(app){
-    $http.post('/api/applications', {'application': app})
-    .success(function(data){
+    DashyAPI.postApplication(app, function(data){
       $location.path("/list");
     });
   };
 })
 
-.controller('ListController', function($rootScope, $scope, $http, $location, DashyAPI, _){
+.controller('ListController', function($rootScope, $scope, $location, DashyAPI, _, io){
   $scope.openClick = function(){
     $scope.open = !$scope.open;  
   }
@@ -20,7 +19,7 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore'])
     $scope.activeApp = app;
     $scope.open = false;
 
-    DashyAPI.loadRequests(app, function(requests){
+    DashyAPI.getRequests(app, function(requests){
       $scope.activeApp.requests = requests;
     });
   }
@@ -58,18 +57,16 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore'])
     return res;
   }
   
-  
-
-  $http.get('/api/applications').success(function(data){
+  DashyAPI.getApplications(function(data){
     $scope.apps = data;
     $scope.activeApp = data[0];
 
-    DashyAPI.loadRequests(data[0], function(requests){
+    DashyAPI.getRequests(data[0], function(requests){
       $scope.activeApp.requests = requests;
     });
 
     var socket = io.connect(window.location.origin);
-    socket.on('newRequest', function (data) {
+    socket && socket.on('newRequest', function (data) {
       $scope.$apply(function () {
         if($scope.activeApp.key === data.appKey) {
           $scope.activeApp.requests.push(data);
@@ -126,15 +123,21 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore'])
 })
 
 .service('DashyAPI', function DashyAPI($http){
-    this.loadRequests = function loadRequests(app, callback){
-      $http.get('/api/requests/'+app.key).success(function (data){
-        callback(data);
-      });
+    this.getRequests = function(app, successCallback){
+      $http.get('/api/requests/'+app.key).success(successCallback);
     };
+
+    this.postApplication = function(app, successCallback){
+      $http.post('/api/applications', {'application': app}).success(successCallback);
+    }
+
+    this.getApplications = function(successCallback){
+      $http.get('/api/applications').success(successCallback); 
+    }
 })
 
-.run(function($http, $location){
-  $http.get('/api/applications').success(function(data){
+.run(function($location, DashyAPI){
+  DashyAPI.getApplications(function(data){
     if (data && data.length > 0){
       $location.path("/list");
     } else {
@@ -145,5 +148,10 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore'])
 
 var underscore = angular.module('underscore', []);
 underscore.factory('_', function() {
-  return window._; // assumes underscore has already been loaded on the page
+  return window._;
+});
+
+var io = angular.module('socket.io', []);
+io.factory('io', function(){
+  return window.io;
 });
