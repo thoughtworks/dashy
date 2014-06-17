@@ -25,10 +25,10 @@
     <div class="col-sm-10 requests">
 
       <ul ng-show="activeApp.requests">
-        <li class="request" ng-repeat="(endpoint, requests) in search(activeApp.query,activeApp.requests)" endpoint="{{activeApp.key}}_{{endpoint}}">
-          <h4>{{endpoint}}</h4>
+        <li class="request" ng-repeat="uniqReq in activeApp.requests | unique:'service'" service="{{activeApp.key}}_{{uniqReq.service}}">
+          <h4>{{uniqReq.service}}</h4>
           <ul>
-            <li ng-repeat="r in requests | orderBy:'-date' | limitTo: 5 track by $index">
+            <li ng-repeat="r in groupBy(activeApp.requests,'service')[uniqReq.service] | orderBy:'-date' | limitTo: 5 track by $index">
               <span ng-class="{'success': r.success, 'fail': !r.success}">&nbsp;</span>
               <span time-ago="{{r.date}}">{{r.date | timeAgo}}</span>
             </li>

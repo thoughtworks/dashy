@@ -1,4 +1,4 @@
-angular.module('app', ['ngRoute'])
+angular.module('app', ['ngRoute', 'ui.utils', 'underscore'])
 
 .controller('NewController', function($scope, $http, $location){
   $scope.application = {};
@@ -11,7 +11,7 @@ angular.module('app', ['ngRoute'])
   };
 })
 
-.controller('ListController', function($rootScope, $scope, $http, $location){
+.controller('ListController', function($rootScope, $scope, $http, $location, DashyAPI, _){
   $scope.openClick = function(){
     $scope.open = !$scope.open;  
   }
@@ -19,6 +19,14 @@ angular.module('app', ['ngRoute'])
   $scope.selectAppClick = function(app){
     $scope.activeApp = app;
     $scope.open = false;
+
+    DashyAPI.loadRequests(app, function(requests){
+      $scope.activeApp.requests = requests;
+    });
+  }
+
+  $scope.groupBy = function(items, label){
+    return _.groupBy(items, label);
   }
 
   $scope.search = function (query,items) {
@@ -50,29 +58,21 @@ angular.module('app', ['ngRoute'])
     return res;
   }
   
+  
+
   $http.get('/api/applications').success(function(data){
     $scope.apps = data;
     $scope.activeApp = data[0];
 
+    DashyAPI.loadRequests(data[0], function(requests){
+      $scope.activeApp.requests = requests;
+    });
+
     var socket = io.connect(window.location.origin);
     socket.on('newRequest', function (data) {
       $scope.$apply(function () {
-        for(var i in $scope.apps) {
-          if($scope.apps[i].name === data.appName) {
-            if(data.appName === $scope.activeApp.name) {
-              $scope.activeApp.requests = $scope.activeApp.requests || {};
-              $scope.activeApp.requests[data.service] = $scope.activeApp.requests[data.service] || [];
-              $scope.activeApp.requests[data.service].push(data.request);
-
-            }
-            else {
-              $scope.apps[i].requests = $scope.apps[i].requests || {};
-              $scope.apps[i].requests[data.service] = $scope.apps[i].requests[data.service] || [];
-              $scope.apps[i].requests[data.service].push(data.request);
-            }
-
-            break;
-          }
+        if($scope.activeApp.key === data.appKey) {
+          $scope.activeApp.requests.push(data);
         }
       });
 
@@ -125,6 +125,14 @@ angular.module('app', ['ngRoute'])
   };
 })
 
+.service('DashyAPI', function DashyAPI($http){
+    this.loadRequests = function loadRequests(app, callback){
+      $http.get('/api/requests/'+app.key).success(function (data){
+        callback(data);
+      });
+    };
+})
+
 .run(function($http, $location){
   $http.get('/api/applications').success(function(data){
     if (data && data.length > 0){
@@ -133,6 +141,9 @@ angular.module('app', ['ngRoute'])
       $location.path("/new");
     }
   });
-})
+});
 
-;
+var underscore = angular.module('underscore', []);
+underscore.factory('_', function() {
+  return window._; // assumes underscore has already been loaded on the page
+});

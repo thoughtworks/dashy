@@ -1,12 +1,25 @@
-describe('Filtering function inside ListController', function () {
+describe('ListController', function () {
 
   var scope;
   beforeEach(angular.mock.inject(function ($rootScope, $controller) {
     scope = $rootScope.$new();
     $controller('ListController', {
-      $scope: scope
+      $scope: scope,
+      DashyAPI: {
+        loadRequests: function (app, callback) {
+          callback([]);
+        }
+      }
     });
   }));
+
+  it('should group by service', function(){
+    var items = [{service: 'S1', id:1}, {service: 'S2', id:2}, {service: 'S1', id:3}];
+    var result = scope.groupBy(items, 'service');
+    var expected = { S1 : [ { service : 'S1', id : 1 }, { service : 'S1', id : 3 } ], S2 : [ { service : 'S2', id : 2 } ] };
+
+    expect(result).toEqual(expected);
+  });
 
   it('should select an app', function(){
     var app = {
@@ -17,16 +30,8 @@ describe('Filtering function inside ListController', function () {
 
     expect(scope.activeApp).toEqual(app);
     expect(scope.open).toEqual(false);
+    expect(scope.activeApp.requests).toEqual([]);
   });
-
-  it('should load all requests', function(){
-    //TODO
-    scope.activeApp = {
-      name: 'name',
-      key: 'mykey'
-    };
-    
-  });  
   
   it('should get all items back if the query is an empty string', function (ListController) {
     expect(scope.search('',[{a:12}])).toEqual([{a:12}]);
