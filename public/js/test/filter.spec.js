@@ -8,15 +8,26 @@ describe('Filtering function inside ListController', function () {
     });
   }));
 
-  describe('when select an app', function(){
+  it('should select an app', function(){
+    var app = {
+      name: 'name',
+      key: 'mykey'
+    };
     scope.selectAppClick(app);
-    it('should load all request', function(){
-      
-    });  
-  })
 
+    expect(scope.activeApp).toEqual(app);
+    expect(scope.open).toEqual(false);
+  });
+
+  it('should load all requests', function(){
+    //TODO
+    scope.activeApp = {
+      name: 'name',
+      key: 'mykey'
+    };
+    
+  });  
   
-
   it('should get all items back if the query is an empty string', function (ListController) {
     expect(scope.search('',[{a:12}])).toEqual([{a:12}]);
     expect(scope.search(' ',[1,2,3])).toEqual([1,2,3]);
