@@ -126,7 +126,7 @@ describe('Requets API', function() {
         .expect(200)
         .end(function end(err, res){
           if (err) return done(err);
-          console.log(err);
+          
           Application.findOne({ key: appKey }, function (err, app) {
             expect(app.key).to.be.equal(appKey);
             Request.find({appKey: app.key}, function(err, requests) {
