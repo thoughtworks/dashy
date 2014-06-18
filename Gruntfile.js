@@ -2,11 +2,7 @@ module.exports = function (grunt) {
   grunt.initConfig({
     exec: {
       test: {
-        command: 'NODE_ENV=test ./node_modules/.bin/mocha --require should --reporter spec --check-leaks --recursive'
-      },
-
-      watch_test: {
-        command: 'NODE_ENV=test ./node_modules/.bin/mocha --require should --reporter spec --check-leaks --recursive'
+        command: 'NODE_ENV=test ./node_modules/.bin/mocha test/server --require should --reporter spec --check-leaks --recursive'
       }
     },
     karma: {
@@ -24,8 +20,8 @@ module.exports = function (grunt) {
             'public/js/src/vendor/underscore/underscore.js',
             'public/js/src/app.js',
             'public/js/src/*.js',
-            'public/js/test/testHelper.js',
-            'public/js/test/**/*.js'
+            'test/client/testHelper.js',
+            'test/client/**/*.js'
           ],
           browsers: ['PhantomJS']
         }

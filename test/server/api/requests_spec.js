@@ -1,8 +1,8 @@
 var request = require('supertest')
-  , app = require('../../server')
+  , app = require('../../../server')
   , expect = require('chai').expect
-  , Application = require('../../models/application')
-  , Request = require('../../models/request')
+  , Application = require('../../../models/application')
+  , Request = require('../../../models/request')
   ;
 
 
