@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var schema = mongoose.Schema({
   appKey: String,
-  service: String,
+  name: String,
   success: Boolean,
   date: { type: Date, default: Date.now },
   meta: {}

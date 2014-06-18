@@ -23,8 +23,8 @@ module.exports = function(io) {
       return;
     }
     
-    if(data.service === undefined || data.success === undefined) {
-      res.send(400, {error: 'Invalid data.'})
+    if(data.name === undefined || data.success === undefined) {
+      res.send(400, {error: 'Invalid data. name and success fields are required.'})
       return;
     }
 
@@ -36,23 +36,12 @@ module.exports = function(io) {
       
       var requestModel = { 
         appKey: app.key,
-        service: data.service,
+        name: data.name,
         success: data.success,
-        date: new Date()
+        date: new Date(),
+        meta: data.meta
       };
       
-      var meta = function generateMeta(pData){
-        var result = _.clone(pData);
-        
-        delete result.service;
-        delete result.success;
-        delete result.date;
-
-        return result;
-      }(data);
-      
-      requestModel.meta = meta;
-
       new Request(requestModel).save(function(err, requestDb){
         io && io.sockets.emit('newRequest', requestDb);
 

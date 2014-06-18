@@ -27,7 +27,7 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
   $scope.groupBy = function(items, label){
     return _.groupBy(items, label);
   }
-  
+  console.log(1);
   DashyAPI.getApplications(function(data){
     $scope.apps = data;
     $scope.activeApp = data[0];
@@ -37,14 +37,16 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
     });
 
     var socket = io.connect(window.location.origin);
+    console.log(2);
     socket && socket.on('newRequest', function (data) {
       $scope.$apply(function () {
         if($scope.activeApp.key === data.appKey) {
+          console.log(data);
           $scope.activeApp.requests.push(data);
         }
       });
 
-      var el = $('[service="' + $scope.activeApp.key + '_' + data.service + '"] li:first');
+      var el = $('[service="' + $scope.activeApp.key + '_' + data.name + '"] li:first');
       el.addClass('spawned');
       setTimeout(function () {
         el.removeClass('spawned');

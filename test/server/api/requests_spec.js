@@ -20,10 +20,10 @@ describe('Requets API', function() {
             appKey = app.key;
 
             Request.remove({}, function(err){
-              new Request({appKey: appKey, success:true, service:'Service', environment: 'Production'}).save();
-              new Request({appKey: appKey, success:false, service:'Service', environment: 'Production'}).save();
-              new Request({appKey: appKey, success:true, service:'Service', environment: 'QA'}).save();
-              new Request({appKey: 'AnotherAppKey' , success:false, service:'Service', environment: 'Test'}).save();
+              new Request({appKey: appKey, success:true, name:'Service', environment: 'Production'}).save();
+              new Request({appKey: appKey, success:false, name:'Service', environment: 'Production'}).save();
+              new Request({appKey: appKey, success:true, name:'Service', environment: 'QA'}).save();
+              new Request({appKey: 'AnotherAppKey' , success:false, name:'Service', environment: 'Test'}).save();
               done();
             });
           });
@@ -77,7 +77,7 @@ describe('Requets API', function() {
           if (err) return done(err);
 
           var data = JSON.parse(res.text);
-          expect(data).to.deep.equal({error:'Invalid data.'});
+          expect(data).to.deep.equal({error:'Invalid data. name and success fields are required.'});
           done();
         });
       });
@@ -86,7 +86,7 @@ describe('Requets API', function() {
     describe('when request with invalid key', function () {
       it('should send a invalid key message', function (done) {
         var data = {
-          request: {service: 'Service', success: true }
+          request: {name: 'Service', success: true }
         };
         request(app)
         .post('/api/requests/invalid_key')
@@ -117,10 +117,12 @@ describe('Requets API', function() {
         .post('/api/requests/'+appKey)
         .send({
           request: {
-            service: 'Service', 
+            name: 'Service', 
             success: true,
-            environment: 'Production',
-            metattr: 'metaValue'
+            meta: {
+              environment: 'Production',
+              metattr: 'metaValue'
+            }
           }
         })
         .expect(200)
@@ -134,8 +136,8 @@ describe('Requets API', function() {
               expect(requests.length).to.be.equal(1);
               expect(requests[0].date).to.be.a('date');
               expect(requests[0].success).to.be.equal(true);
+              expect(requests[0].name).to.be.equal('Service');
               expect(requests[0].meta.environment).to.be.equal('Production');
-              expect(requests[0].service).to.be.equal('Service');
               expect(requests[0].meta.metattr).to.be.equal('metaValue');
 
               done();
