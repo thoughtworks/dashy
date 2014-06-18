@@ -2,11 +2,11 @@ module.exports = function (grunt) {
   grunt.initConfig({
     exec: {
       test: {
-        command: './node_modules/.bin/mocha --require should --reporter spec --check-leaks --recursive'
+        command: 'NODE_ENV=test ./node_modules/.bin/mocha --require should --reporter spec --check-leaks --recursive'
       },
 
       watch_test: {
-        command: './node_modules/.bin/mocha --require should --reporter spec --check-leaks --recursive'
+        command: 'NODE_ENV=test ./node_modules/.bin/mocha --require should --reporter spec --check-leaks --recursive'
       }
     },
     karma: {
