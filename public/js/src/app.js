@@ -27,35 +27,6 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
   $scope.groupBy = function(items, label){
     return _.groupBy(items, label);
   }
-
-  $scope.search = function (query,items) {
-    if (!query) return items;
-    var query = query.toString().toLowerCase().trim();
-    if (query==='') return items;
-    res = {};
-    function searchSubtree(node,subtree){
-      for (var key in node){
-        search_key = key.toLowerCase().toString().trim();
-        if(node.hasOwnProperty(key)){
-          if(search_key.search(query)>=0){
-            subtree[key]=node[key];
-          }else if(typeof node[key] === 'number' || typeof node[key] === 'string'){
-            if(node[key].toString().toLowerCase().search(query)>=0){
-              subtree[key]=node[key];
-            }
-          }else if(typeof node[key] === 'object'){
-            var sub_res = searchSubtree(node[key],{});
-            if (Object.keys(sub_res).length>0){
-              subtree[key]=node[key];
-            }
-          }
-        }
-      }
-      return subtree;
-    }
-    res = searchSubtree(items, res);
-    return res;
-  }
   
   DashyAPI.getApplications(function(data){
     $scope.apps = data;
