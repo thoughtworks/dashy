@@ -25,7 +25,7 @@
     <div class="col-sm-10 requests">
 
       <ul ng-show="activeApp.requests">
-        <li class="request" ng-repeat="uniqReq in activeApp.requests | unique:'service'" service="{{activeApp.key}}_{{uniqReq.service}}">
+        <li class="request" ng-repeat="uniqReq in activeApp.requests | unique:'service' | filter: activeApp.query" service="{{activeApp.key}}_{{uniqReq.service}}">
           <h4>{{uniqReq.service}}</h4>
           <ul>
             <li ng-repeat="r in groupBy(activeApp.requests,'service')[uniqReq.service] | orderBy:'-date' | limitTo: 5 track by $index">
