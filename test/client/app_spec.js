@@ -50,12 +50,80 @@ describe('ListController', function () {
     });
   }));
 
-  it('should group by service', function(){
+
+  it('should group requests by service', function(){
     var items = [{service: 'S1', id:1}, {service: 'S2', id:2}, {service: 'S1', id:3}];
     var result = scope.groupBy(items, 'service');
-    var expected = { S1 : [ { service : 'S1', id : 1 }, { service : 'S1', id : 3 } ], S2 : [ { service : 'S2', id : 2 } ] };
+    var expected = { 
+      S1 : [ { service : 'S1', id : 1 },{ service : 'S1', id : 3 } ], 
+      S2 : [ { service : 'S2', id : 2 } ] 
+    };
 
-    expect(result).toEqual(expected);
+    expect(expected).toEqual(result);
+  });
+
+  it('should be able to group services by custom key', function(){
+    var items = [
+      {name:'service', success:false, meta:{environment:'dev'}},
+      {name:'service', meta:{telephone:121212, environment:'qa'}},
+      {name:'service', meta:{telephone:1321321, status:404, environment:'prod'}},
+      {name:'service', success:true, meta:{environment:'dev'}},
+      {name:'service2', success:true, meta:{environment:'dev'}},
+      {name:'service2', success:false, meta:{}}
+    ];
+
+    var expected = {
+      dev:{
+        service: [
+          {name:'service', success:false, meta: {environment:'dev'}},
+          {name:'service', success:true, meta: {environment:'dev'}},
+        ],
+        service2: [
+          {name:'service2', success:true, meta:{environment:'dev'}}
+        ]
+      },
+      qa:{
+        service: [
+          {name:'service', meta:{telephone:121212, environment:'qa'}}
+        ]
+      },
+      prod:{
+        service: [
+          {name:'service', meta:{telephone:1321321, status:404, environment:'prod'}}
+        ]
+      },
+      undefined: {
+        service2: [
+          {name:'service2', success:false, meta:{}}
+        ]
+      }
+    };
+
+    var result = scope.groupBy(
+      items, 
+      [
+        function(item){
+          return item.meta.environment;
+        }, 
+        function(item){
+          return item.name;
+        }
+      ]
+    );
+
+    expect(expected).toEqual(result);
+  });
+
+  it('should get all available grouping keys', function(){
+    var expected = ['environment', 'telephone', 'status'];
+    scope.activeApp.requests = [
+      {name:'service', success:false, meta:{environment:'dev'}},
+      {name:'service', meta:{telephone:121212, environment:'qa'}},
+      {name:'service', meta:{telephone:1321321, status:404, environment:'prod'}},
+      {name:'service', success:true, meta:{environment:'dev'}}
+    ];
+    var result = scope.buildMetaKeys();
+    expect(expected).toEqual(result);
   });
 
   it('should select an app', function(){

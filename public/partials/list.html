@@ -14,27 +14,12 @@
     <span class="key form-inline">App ID:&nbsp;
       <input type="text" value="{{activeApp.key}}" disabled="disabled" class="form-control">
     </span>
-    <span class="key form-inline">
-      <input type="text" ng-model="activeApp.query" placeholder="Filter by..." class="form-control">
-    </span>
+
+    <label>Meta key:</label>
+    <select ng-model="selectedMetaKey" ng-options="metaKey for metaKey in metaKeys" ng-change="selectMetaKeyOnChange()">
+      <option value="">-- choose a key --</option>
+    </select>
   </header>
 
-  <p ng-show="!activeApp.requests">No requests sent to {{activeApp.name}} yet</p>
-
-  <div class="row">
-    <div class="col-sm-10 requests">
-
-      <ul ng-show="activeApp.requests">
-        <li class="request" ng-repeat="uniqReq in activeApp.requests | unique:'name' | filter: activeApp.query" service="{{activeApp.key}}_{{uniqReq.name}}">
-          <h4>{{uniqReq.name}}</h4>
-          <ul>
-            <li ng-repeat="r in groupBy(activeApp.requests,'name')[uniqReq.name] | orderBy:'-date' | limitTo: 5 track by $index">
-              <span ng-class="{'success': r.success, 'fail': !r.success}">&nbsp;</span>
-              <span time-ago="{{r.date}}">{{r.date | timeAgo}}</span>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-  </div>
+  <dashy-group></dashy-group>
 </div>

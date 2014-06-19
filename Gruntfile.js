@@ -23,7 +23,8 @@ module.exports = function (grunt) {
             'test/client/testHelper.js',
             'test/client/**/*.js'
           ],
-          browsers: ['PhantomJS']
+          browsers: ['PhantomJS'],
+          colors: true
         }
       }
     },
