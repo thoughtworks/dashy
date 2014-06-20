@@ -1,6 +1,6 @@
 {
   "name": "dashy",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "homepage": "https://github.com/thoughtworks/dashy",
   "description": "Dashboard that reports status of your integration points",
   "bin": {
@@ -24,7 +24,6 @@
     "static-favicon": "~1.0.0",
     "foreman": "~0.3.0",
     "commander": "~2.2.0",
-    "npm": "^1.4.13",
     "underscore": "^1.6.0"
   },
   "devDependencies": {
@@ -41,7 +40,8 @@
     "chai": "^1.9.1",
     "supertest": "^0.13.0",
     "should": "^4.0.4",
-    "grunt-bump": "0.0.14"
+    "grunt-bump": "0.0.14",
+    "npm": "^1.4.16"
   },
   "repository": {
     "type": "git",
