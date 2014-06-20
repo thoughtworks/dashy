@@ -82,7 +82,7 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
     });
 
     var socket = io.connect(window.location.origin);
-    socket && socket.on('newRequest', function (data) {
+    socket.on('newRequest', function (data) {
       $scope.$apply(function () {
         if($scope.activeApp.key === data.appKey) {
           $scope.activeApp.requests.push(data);

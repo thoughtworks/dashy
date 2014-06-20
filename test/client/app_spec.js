@@ -48,7 +48,11 @@ describe('ListController', function () {
         }
       },
       io: {
-        connect: function(url){}
+        connect: function(url){
+          return {
+            on: function(data) {}
+          }
+        }
       }
     });
   }));
