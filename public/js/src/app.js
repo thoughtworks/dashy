@@ -18,6 +18,7 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
   $scope.groupedBySelectedMetaKey = undefined;
   $scope.selectedMetaKey = undefined;
   $scope.limitPerName = 5;
+  $scope.showGroupBar = true;
 
   $scope.selectMetaKeyOnChange = function(){
     $scope.reloadMetaKeys();
@@ -67,7 +68,9 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
       }, 
       'name']
     );
-    $scope.selectedMetaKeyValue = Object.keys($scope.groupedBySelectedMetaKey)[0];
+    var keys = _.keys($scope.groupedBySelectedMetaKey);
+    $scope.selectedMetaKeyValue = keys[0];
+    $scope.showGroupBar = keys.length > 1;
   }
 
   DashyAPI.getApplications(function(data){
