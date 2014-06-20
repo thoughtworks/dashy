@@ -74,6 +74,9 @@ describe('Applications API', function() {
             expect(apps[0].name).to.equal('A Name');
             done();
           });
+
+          var myApp = JSON.parse(res.text);
+          expect(myApp).to.be.defined;
         });
       });
     });

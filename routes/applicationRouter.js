@@ -24,7 +24,7 @@ module.exports = function() {
         res.send(500, err);
         return;
       }
-      res.send(200);
+      res.send(200, app);
     });
   });
 

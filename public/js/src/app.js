@@ -5,12 +5,13 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
 
   $scope.submitNewApp = function(app){
     DashyAPI.postApplication(app, function(data){
-      $location.path("/list");
+      $location.path('/list/'+data.key);
     });
   };
 })
 
-.controller('ListController', function($rootScope, $scope, $location, DashyAPI, _, io){
+.controller('ListController', 
+    function($rootScope, $scope, $location, DashyAPI, _, io, $routeParams){
   $scope.open = false;
   $scope.activeApp = undefined;
   $scope.metaKeys = undefined;
@@ -34,9 +35,7 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
     $scope.activeApp = app;
     $scope.open = false;
 
-    DashyAPI.getRequests(app, function(requests){
-      $scope.activeApp.requests = requests;
-    });
+    $location.path('/list/'+app.key);
   }
 
   $scope.buildMetaKeys = function () {
@@ -73,9 +72,11 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
 
   DashyAPI.getApplications(function(data){
     $scope.apps = data;
-    $scope.activeApp = data[0];
+    $scope.activeApp = _.find(data, function(app){
+      return app.key == $routeParams.appKey;
+    });
 
-    DashyAPI.getRequests(data[0], function(requests){
+    DashyAPI.getRequests($scope.activeApp, function(requests){
       $scope.activeApp.requests = requests;
       $scope.reloadMetaKeys();
     });
@@ -101,7 +102,7 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
 
 .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
   $routeProvider.
-    when('/list', {
+    when('/list/:appKey/', {
       templateUrl: 'partials/list.html'
     }).
     when('/new', {
@@ -162,9 +163,9 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
 .run(function($location, DashyAPI){
   DashyAPI.getApplications(function(data){
     if (data && data.length > 0){
-      $location.path("/list");
+      $location.path('/list/'+data[0].key);
     } else {
-      $location.path("/new");
+      $location.path('/new');
     }
   });
 });

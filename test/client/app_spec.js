@@ -24,7 +24,7 @@ describe('NewController', function () {
   describe('when submit a new application', function(){
     it('should change the location to /list', function(){
       scope.submitNewApp({name: 'name'})
-      expect(location.path()).toEqual('/list');
+      expect(location.path()).toMatch(/\/list\/(\w)+/);
     });
   });
 });
@@ -32,10 +32,13 @@ describe('NewController', function () {
 describe('ListController', function () {
 
   var scope;
+  var routeParams;
   beforeEach(angular.mock.inject(function ($rootScope, $controller) {
     scope = $rootScope.$new();
+    routeParams = { appKey: 'my key'};
     $controller('ListController', {
       $scope: scope,
+      $routeParams: routeParams,
       DashyAPI: {
         getRequests: function (app, callback) {
           callback([]);
@@ -129,13 +132,12 @@ describe('ListController', function () {
   it('should select an app', function(){
     var app = {
       name: 'name',
-      key: 'mykey'
+      key: 'my key'
     };
     scope.selectAppClick(app);
 
     expect(scope.activeApp).toEqual(app);
     expect(scope.open).toEqual(false);
-    expect(scope.activeApp.requests).toEqual([]);
   });
 
 });
