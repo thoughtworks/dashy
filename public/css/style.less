@@ -8,6 +8,7 @@ body {
 
   > header {
     border-bottom: 1px solid #ddd;
+    position: relative;
     a {
       font-family: 'Raleway', 'Helvetica Neue', Helvetica, 'Myriad Pro', 'Lucida Grande', sans-serif;
       font-size: 28px;
@@ -15,6 +16,9 @@ body {
     }
     img {
       vertical-align: top;
+      position: absolute;
+      top: 0px;
+      right: 0px;
     }
   }
 }
@@ -30,8 +34,14 @@ ul {
 
 
 #apps {
+  > dashy-group{
+    .row {
+      margin: 5px 0 5px 0;
+    }
+  }
   > header {
-    margin: 5px 0 5px 0;
+    padding: 5px 0 5px 0;
+    border-bottom: 1px solid #ddd;
 
     .select {
       width: 230px;

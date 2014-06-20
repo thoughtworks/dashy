@@ -16,6 +16,7 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
   $scope.metaKeys = undefined;
   $scope.groupedBySelectedMetaKey = undefined;
   $scope.selectedMetaKey = undefined;
+  $scope.limitPerName = 5;
 
   $scope.selectMetaKeyOnChange = function(){
     $scope.reloadMetaKeys();
