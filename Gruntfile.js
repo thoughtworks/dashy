@@ -15,6 +15,8 @@ module.exports = function (grunt) {
             'public/js/src/vendor/angular/angular.js',
             'public/js/src/vendor/angular-route/angular-route.js',
             'public/js/src/vendor/angular-mocks/angular-mocks.js',
+            'public/js/src/vendor/angular-bootstrap/ui-bootstrap.js',
+            'public/js/src/vendor/angular-bootstrap/ui-bootstrap-tlps.js',
             'public/js/src/vendor/angular-ui-utils/ui-utils.js',
             'public/js/src/vendor/moment/moment.js',
             'public/js/src/vendor/underscore/underscore.js',
