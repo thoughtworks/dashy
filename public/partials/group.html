@@ -9,7 +9,7 @@
         <h4>{{name}}</h4>
         <ul>
           <li ng-repeat="r in groupedBySelectedMetaKey[selectedMetaKeyValue][name] | orderBy:'-date' | limitTo: limitPerName track by $index">
-            <span ng-class="{'success': r.success, 'fail': !r.success}">&nbsp;</span>
+            <span ng-class="{'success': r.success, 'fail': !r.success}" popover="{{r.meta}}">&nbsp;</span>
             <span time-ago="{{r.date}}">{{r.date | timeAgo}}</span>
           </li>
         </ul>

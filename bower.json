@@ -12,7 +12,8 @@
     "moment": "~2.6.0",
     "angular-route": "~1.2.16",
     "angular-ui-utils": "~0.1",
-    "underscore": "^1.6.0"
+    "underscore": "^1.6.0",
+    "angular-bootstrap": "~0.11.0"
   },
   "devDependencies": {
     "angular-mocks": "~1.2.16"

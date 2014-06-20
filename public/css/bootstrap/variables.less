@@ -8,12 +8,12 @@
 //## Gray and brand colors for use across Bootstrap.
 
 @gray-darker:            lighten(#000, 13.5%); // #222
-@gray-dark:              lighten(#000, 40%);   // #333
+@gray-dark:              lighten(#000, 20%);   // #333
 @gray:                   lighten(#000, 33.5%); // #555
 @gray-light:             lighten(#000, 60%);   // #999
 @gray-lighter:           lighten(#000, 93.5%); // #eee
 
-@brand-primary:         #3B9BC7;
+@brand-primary:         #428bca;
 @brand-success:         #5cb85c;
 @brand-info:            #5bc0de;
 @brand-warning:         #f0ad4e;
@@ -95,9 +95,9 @@
 @line-height-large:         1.33;
 @line-height-small:         1.5;
 
-@border-radius-base:        0px;
-@border-radius-large:       0px;
-@border-radius-small:       0px;
+@border-radius-base:        4px;
+@border-radius-large:       6px;
+@border-radius-small:       3px;
 
 //** Global color for active items (e.g., navs or dropdowns).
 @component-active-color:    #fff;
@@ -525,9 +525,9 @@
 //** Popover outer arrow width
 @popover-arrow-outer-width:           (@popover-arrow-width + 1);
 //** Popover outer arrow color
-@popover-arrow-outer-color:           rgba(0,0,0,.25);
+@popover-arrow-outer-color:           fadein(@popover-border-color, 5%);
 //** Popover outer arrow fallback color
-@popover-arrow-outer-fallback-color:  #999;
+@popover-arrow-outer-fallback-color:  darken(@popover-fallback-border-color, 20%);
 
 
 //== Labels

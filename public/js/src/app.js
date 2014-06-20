@@ -1,4 +1,4 @@
-angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
+angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io', 'ui.bootstrap.popover'])
 
 .controller('NewController', function($scope, $location, DashyAPI){
   $scope.application = {};
@@ -11,7 +11,7 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io'])
 })
 
 .controller('ListController', 
-    function($rootScope, $scope, $location, DashyAPI, _, io, $routeParams){
+    function($scope, $location, DashyAPI, _, io, $routeParams){
   $scope.open = false;
   $scope.activeApp = undefined;
   $scope.metaKeys = undefined;
