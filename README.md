@@ -20,7 +20,7 @@ Requirements:
     $ dashy start
 
 ### Report your request status
-    curl --data "request[name]=<NAME>&request[success]=<true|false>&request[meta][foo]=<bar>" \
+    curl --data "request[name]=<NAME>&request[success]=<true|false>&request[meta][environment]=<dev|test|etc>" \
     http://localhost:3000/api/requests/:app_id
 
 ### Contributing
