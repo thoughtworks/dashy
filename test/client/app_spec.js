@@ -144,4 +144,26 @@ describe('ListController', function () {
     expect(scope.open).toEqual(false);
   });
 
+  it('should set _highlighted values when input the search', function(){
+    var items = [
+      {name:'service', success:false, meta:{environment:'dev'}},
+      {name:'service', meta:{telephone:121212, environment:'qa'}},
+      {name:'service', meta:{telephone:1321321, status:404, environment:'prod'}},
+      {name:'service', success:true, meta:{environment:'dev'}}
+    ];
+
+    var expected = [
+      {name:'service', success:false, meta:{environment:'dev'}, _highlighted: true},
+      {name:'service', meta:{telephone:121212, environment:'qa'}, _highlighted: false},
+      {name:'service', meta:{telephone:1321321, status:404, environment:'prod'}, _highlighted: false},
+      {name:'service', success:true, meta:{environment:'dev'}, _highlighted: true}
+    ];
+
+    scope.activeApp.requests = _.clone(items);
+    scope.highlightSearch('dev');
+
+    expect(expected).toEqual(scope.activeApp.requests);
+    // expect(scope.groupedBySelectedMetaKey).toEqual(expected);
+  });
+
 });

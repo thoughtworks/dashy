@@ -11,7 +11,7 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io', 'ui.boo
 })
 
 .controller('ListController', 
-    function($scope, $location, DashyAPI, _, io, $routeParams){
+    function($scope, $location, $routeParams, DashyAPI, _, io){
   $scope.open = false;
   $scope.activeApp = undefined;
   $scope.metaKeys = undefined;
@@ -19,6 +19,7 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io', 'ui.boo
   $scope.selectedMetaKey = undefined;
   $scope.limitPerName = 5;
   $scope.showGroupBar = true;
+  $scope.highlightText = undefined;
 
   $scope.selectMetaKeyOnChange = function(){
     $scope.reloadMetaKeys();
@@ -72,6 +73,25 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io', 'ui.boo
     $scope.selectedMetaKeyValue = keys[0];
     $scope.showGroupBar = keys.length > 1;
   }
+
+  $scope.highlightSearch = function(newValue, oldValue){
+    if ($scope.activeApp) {
+      _.each($scope.activeApp.requests, function(it){
+        it._highlighted = (function meta(meta){
+          if (!newValue) return false;
+
+          var keys = _.keys(meta)
+          for (var i in keys){
+            if (meta[keys[i]].toString().indexOf(newValue) > -1) return true;
+          }
+
+          return false;
+        })(it.meta);
+      });
+    }
+  };
+
+  $scope.$watch('highlightText', $scope.highlightSearch);
 
   DashyAPI.getApplications(function(data){
     $scope.apps = data;

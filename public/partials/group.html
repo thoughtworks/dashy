@@ -8,7 +8,7 @@
       <li class="request" ng-repeat="(name, data) in groupedBySelectedMetaKey[selectedMetaKeyValue]" service="{{activeApp.key}}_{{selectedMetaKeyValue}}_{{name}}">
         <h4>{{name}}</h4>
         <ul>
-          <li ng-repeat="r in groupedBySelectedMetaKey[selectedMetaKeyValue][name] | orderBy:'-date' | limitTo: limitPerName track by $index">
+          <li ng-repeat="r in groupedBySelectedMetaKey[selectedMetaKeyValue][name] | orderBy:'-date' | limitTo: limitPerName track by $index" ng-class="{highlighted: r._highlighted}">
             <span ng-class="{'success': r.success, 'fail': !r.success}" popover="{{r.meta}}">&nbsp;</span>
             <span time-ago="{{r.date}}">{{r.date | timeAgo}}</span>
           </li>
