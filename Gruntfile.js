@@ -65,17 +65,10 @@ module.exports = function (grunt) {
       }
       npm = require('npm');
     npm.load({}, function(err) {
-      npm.registry.adduser(data.username, data.password, data.email, function(err) {
-        if (err) {
-          console.log(err);
-          done(false);
-        } else {
-          npm.config.set("email", data.email, "user");
-          npm.commands.publish([], function(err) {
-            console.log(err || "Published to registry");
-            done(!err);
-          });
-        }
+      npm.config.set("email", data.email, "user");
+      npm.commands.publish([], function(err) {
+        console.log(err || "Published to registry");
+        done(!err);
       });
     });
   });
