@@ -1,5 +1,5 @@
 <p ng-show="!activeApp.requests">No requests sent to {{activeApp.name}} yet</p>
-<div class="row" ng-show="activeApp.requests">
+<div class="row">
   <div class="col-sm-2 environments" ng-show="showGroupBar">
     <a ng-class="{active: selectedMetaKeyValue==key}" href="javascript:;" ng-repeat="(key, data) in groupedBySelectedMetaKey" ng-click="selectMetaKeyValue(key)">{{key}}</a>
   </div>
