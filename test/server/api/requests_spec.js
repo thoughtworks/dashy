@@ -24,13 +24,17 @@ describe('Requets API', function() {
               new Request({appKey: appKey, success:false, name:'Service', environment: 'Production'}).save();
               new Request({appKey: appKey, success:true, name:'Service', environment: 'QA'}).save();
               new Request({appKey: 'AnotherAppKey' , success:false, name:'Service', environment: 'Test'}).save();
+              for (var i=0; i<10; i++){
+                // This is for testing the limit on some queries
+                new Request({appKey: appKey, success:true, name:'Service', environment: 'Production'}).save();
+              }
               done();
             });
           });
         });
       });
 
-      it('should return an array requests', function(done){
+      it('should return an array requests with no more than 10 requests', function(done){
         request(app)
         .get('/api/requests/'+appKey)
         .expect('Content-Type', /json/)
@@ -40,8 +44,7 @@ describe('Requets API', function() {
 
           var requests = JSON.parse(res.text);
 
-          expect(requests.length).to.equal(3);
-          
+          expect(requests.length).to.lessThan(11);
           done();
         });
       });
