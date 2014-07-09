@@ -6,7 +6,7 @@ var router = require('express').Router(),
 module.exports = function(io) {
 
   router.get('/:app_key', function(req, res){
-     Request.find({appKey:req.params.app_key}).sort({date: 1}).exec(function (err, requestsDb) {
+     Request.find({appKey:req.params.app_key}).sort({date: 1}).limit(10).exec(function (err, requestsDb) {
       if (err) {
         res.send(500, err);
         return;
