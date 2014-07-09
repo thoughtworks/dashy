@@ -1,4 +1,4 @@
-var Application = require('../../../models/application')
+var Application = require('../../../lib/models/application')
   , expect = require('chai').expect;
 
 describe('models/Application', function () {

@@ -7,8 +7,8 @@ var express           = require('express'),
     app               = express(),
     server            = require('http').createServer(app),
     io                = require('socket.io').listen(server),
-    requestRouter     = require('./routes/requestRouter')(io),
-    applicationRouter = require('./routes/applicationRouter')()
+    requestRouter     = require('./lib/routes/requestRouter')(io),
+    applicationRouter = require('./lib/routes/applicationRouter')()
     ;
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
@@ -37,7 +37,7 @@ function setupRoutes () {
 }
 
 function setupDatabase () {
-  require('./config/database');
+  require('./lib/config/database');
 }
 
 function setupMiddlewares () {
