@@ -25,7 +25,8 @@
     "foreman": "~0.3.0",
     "commander": "~2.2.0",
     "underscore": "^1.6.0",
-    "bower": "^1.3.7"
+    "bower": "^1.3.7",
+    "q":"~1"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
