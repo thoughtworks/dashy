@@ -1,14 +1,15 @@
-<p ng-show="!activeApp.requests">No requests sent to {{activeApp.name}} yet</p>
 <div class="row">
   <div class="col-sm-2 environments" ng-show="showGroupBar">
-    <a ng-class="{active: selectedMetaKeyValue==key}" href="javascript:;" ng-repeat="(key, data) in groupedBySelectedMetaKey" ng-click="selectMetaKeyValue(key)">{{key}}</a>
+    <a ng-class="{active: selectedMetaValue==value}" href="javascript:;" ng-repeat="value in metaValues[selectedMetaKey]" ng-click="selectMetaValue(value)">{{value}}</a>
   </div>
   <div class="col-sm-10 requests">
-    <ul ng-show="groupedBySelectedMetaKey">
-      <li class="request" ng-repeat="(name, data) in groupedBySelectedMetaKey[selectedMetaKeyValue]" service="{{activeApp.key}}_{{selectedMetaKeyValue}}_{{name}}">
+  <p ng-show="!activeApp.requests && !loadingRequestsGroup">No requests sent to {{activeApp.name}} yet</p>
+  <p ng-show="loadingRequestsGroup">Loading requests for {{selectedMetaValue}}...</p>
+    <ul ng-show="activeApp.requests">
+      <li class="request" ng-repeat="(name, data) in activeApp.requests[selectedMetaValue]" service="{{activeApp.key}}_{{selectedMetaValue}}_{{name}}">
         <h4>{{name}}</h4>
         <ul>
-          <li ng-repeat="r in groupedBySelectedMetaKey[selectedMetaKeyValue][name] | orderBy:'-date' | limitTo: limitPerName track by $index" ng-class="{highlighted: r._highlighted}">
+          <li ng-repeat="r in activeApp.requests[selectedMetaValue][name] | orderBy:'-date' | limitTo: limitPerName track by $index" ng-class="{highlighted: r._highlighted}">
             <span ng-class="{'success': r.success, 'fail': !r.success}" popover="{{r.meta}}">&nbsp;</span>
             <span time-ago="{{r.date}}">{{r.date | timeAgo}}</span>
           </li>
