@@ -54,7 +54,7 @@ describe('Requets API', function() {
 
       it('should return an array requests with no more than 5 requests on each service', function(done){
         request(app)
-        .get('/api/requests/group_by/'+appKey+'/name/Luan')
+        .get('/api/requests/'+appKey+'/group_by/name/Luan')
         .expect(200)
         .expect('Content-Type', /json/)
         .end(function(err, response){
