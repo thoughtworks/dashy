@@ -20,31 +20,53 @@ describe('Requets API', function() {
             appKey = app.key;
 
             Request.remove({}, function(err){
-              new Request({appKey: appKey, success:true, name:'Service', environment: 'Production'}).save();
-              new Request({appKey: appKey, success:false, name:'Service', environment: 'Production'}).save();
-              new Request({appKey: appKey, success:true, name:'Service', environment: 'QA'}).save();
-              new Request({appKey: 'AnotherAppKey' , success:false, name:'Service', environment: 'Test'}).save();
+              new Request({appKey: appKey, success:true, name:'Service', meta:{ environment: 'Production'} }).save();
+              new Request({appKey: appKey, success:false, name:'Service', meta:{ environment: 'Production'} }).save();
+              new Request({appKey: appKey, success:true, name:'Service', meta:{ environment: 'QA'} }).save();
+              new Request({appKey: 'AnotherAppKey' , success:false, name:'Service', meta:{ environment: 'Test'} }).save();
               for (var i=0; i<10; i++){
                 // This is for testing the limit on some queries
-                new Request({appKey: appKey, success:true, name:'Service', environment: 'Production'}).save();
+                new Request({appKey: appKey, success:true, name:'LimitedService', meta:{ environment: 'Production', name: 'Luan'} }).save();
               }
+              new Request({appKey: appKey, success:false, name:'Service', meta:{ environment: 'Production', name: 'Luan'} }).save();
               done();
             });
           });
         });
       });
 
-      it('should return an array requests with no more than 10 requests', function(done){
+      it('should return all grouping keys and possible values, with no more than 5 values per key', function(done){
         request(app)
-        .get('/api/requests/'+appKey)
+        .get('/api/requests/groups/'+appKey)
         .expect('Content-Type', /json/)
         .expect(200)
-        .end(function(err, res){
+        .end(function(err, response){
           if (err) return done(err);
 
-          var requests = JSON.parse(res.text);
+          var groups = JSON.parse(response.text);
 
-          expect(requests.length).to.lessThan(11);
+          expect(groups).to.have.property('name');
+          expect(groups['name'][0]).to.deep.equal('Luan');
+          expect(groups['environment']).to.have.length(2);
+          done();
+        })
+      });
+
+      it('should return an array requests with no more than 5 requests on each service', function(done){
+        request(app)
+        .get('/api/requests/group_by/'+appKey+'/name/Luan')
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function(err, response){
+          if (err) return done(err);
+
+          var requests = JSON.parse(response.text);
+
+          expect(requests).to.have.property('LimitedService');
+          expect(requests['LimitedService']).to.have.length(5);
+
+          expect(requests).to.have.property('Service');
+          expect(requests['Service']).to.have.length(1);
           done();
         });
       });
@@ -106,7 +128,7 @@ describe('Requets API', function() {
     });
 
     describe('when request with a valid key', function () {
-      var appKey;      
+      var appKey;     
     
       before(function(done){
         new Application({ name: 'The app' }).save(function (err, app) {
