@@ -25,8 +25,9 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io', 'ui.boo
     $scope.reloadMetaKeys();
   }
 
-  $scope.selectMetaKeyValue = function(key){
-    $scope.selectedMetaKeyValue = key;
+  $scope.selectMetaValue = function(value){
+    $scope.selectedMetaValue = value;
+    $scope.loadRequestsGroup();
   }
   
   $scope.openClick = function(){
@@ -40,39 +41,30 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io', 'ui.boo
     $location.path('/list/'+app.key);
   }
 
-  $scope.buildMetaKeys = function () {
-    var requests = $scope.activeApp.requests;
-    var result = [];
-
-    _.each(requests, function(req){
-      if(req.hasOwnProperty('meta')){
-        result.push(Object.keys(req.meta));
-      }
+  $scope.reloadMetaKeys = function(skipLoadRequests){
+    return DashyAPI.getGroups($scope.activeApp, function (groups){
+      $scope.metaValues = groups;
+      var keys = _.keys(groups);
+      $scope.metaKeys = keys;
+      $scope.selectedMetaKey = $scope.selectedMetaKey || keys[0];
+      $scope.selectedMetaValue = $scope.selectedMetaValue || groups[$scope.selectedMetaKey][0];
+      $scope.showGroupBar = groups[$scope.selectedMetaKey].length > 0;
+      if(!skipLoadRequests) $scope.loadRequestsGroup();
     });
-    return _.uniq(_.flatten(result));
-  };
-
-  $scope.groupBy = function (obj, values, context) {
-    if (typeof values === 'string'){
-      return _.groupByMulti(obj, [values], context);
-    } else {
-      return _.groupByMulti(obj, values, context);
-    }
-  };
-
-  $scope.reloadMetaKeys = function(){
-    $scope.metaKeys = $scope.buildMetaKeys();
-    $scope.groupedBySelectedMetaKey = $scope.groupBy(
-      $scope.activeApp.requests, 
-      [function(it){
-        return it.meta[$scope.selectedMetaKey];
-      }, 
-      'name']
-    );
-    var keys = _.keys($scope.groupedBySelectedMetaKey);
-    $scope.selectedMetaKeyValue = keys[0];
-    $scope.showGroupBar = keys.length > 1;
   }
+
+  $scope.loadRequestsGroup = function (){
+    $scope.activeApp.requests = $scope.activeApp.requests || {};
+    $scope.loadingRequestsGroup = true;
+    DashyAPI.getRequestsByGroup(
+      $scope.activeApp,
+      $scope.selectedMetaKey,
+      $scope.selectedMetaValue,
+      function(requests){
+        $scope.activeApp.requests[$scope.selectedMetaValue] = requests;
+        $scope.loadingRequestsGroup = false;
+      });
+  };
 
   $scope.highlightSearch = function(newValue, oldValue){
     if ($scope.activeApp) {
@@ -99,21 +91,21 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io', 'ui.boo
       return app.key == $routeParams.appKey;
     });
 
-    DashyAPI.getRequests($scope.activeApp, function(requests){
-      $scope.activeApp.requests = requests;
-      $scope.reloadMetaKeys();
-    });
+    $scope.reloadMetaKeys();
 
     var socket = io.connect(window.location.origin);
     socket.on('newRequest', function (data) {
       $scope.$apply(function () {
         if($scope.activeApp.key === data.appKey) {
-          $scope.activeApp.requests.push(data);
-          $scope.reloadMetaKeys();
+          var newRequestMetaValue = data.meta[$scope.selectedMetaKey];
+          $scope.activeApp.requests[newRequestMetaValue] = $scope.activeApp.requests[newRequestMetaValue] || {};
+          $scope.activeApp.requests[newRequestMetaValue][data.name] = $scope.activeApp.requests[newRequestMetaValue][data.name] || [];
+          $scope.activeApp.requests[newRequestMetaValue][data.name].push(data);
+          $scope.reloadMetaKeys(true);
         }
       });
 
-      var el = $('[service="' + $scope.activeApp.key + '_' + $scope.selectedMetaKeyValue + '_' + data.name + '"] li:first');
+      var el = $('[service="' + $scope.activeApp.key + '_' + $scope.selectedMetaKey + '_' + data.name + '"] li:first');
       el.addClass('spawned');
       setTimeout(function () {
         el.removeClass('spawned');
@@ -163,8 +155,12 @@ angular.module('app', ['ngRoute', 'ui.utils', 'underscore', 'socket.io', 'ui.boo
 })
 
 .service('DashyAPI', function DashyAPI($http){
-    this.getRequests = function(app, successCallback){
-      $http.get('/api/requests/'+app.key).success(successCallback);
+    this.getGroups = function (app, successCallback){
+      $http.get('/api/requests/groups/'+app.key).success(successCallback);
+    };
+
+    this.getRequestsByGroup = function (app, metaKey, metaValue, successCallback){
+      $http.get('/api/requests/'+app.key+'/group_by/'+metaKey+'/'+metaValue).success(successCallback);
     };
 
     this.postApplication = function(app, successCallback){
