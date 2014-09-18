@@ -23,10 +23,16 @@ Requirements:
     curl --data "request[name]=<NAME>&request[success]=<true|false>&request[meta][environment]=<dev|test|etc>" \
     http://localhost:3000/api/requests/:app_id
 
-### Contributing
+## Contributing
 
-I. Clone `$ git clone git@github.com:thoughtworks/dashy.git`
+I. Clone
 
-II. Install `$ make`
+    $ git clone git@github.com:thoughtworks/dashy.git
 
-III. Start the server `$ npm start`
+II. Install
+
+    $ make
+
+III. Start the server
+
+    $ npm start
